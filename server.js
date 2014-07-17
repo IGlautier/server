@@ -2,21 +2,7 @@ var express = require("express");
 var app = express();
 var util = require("util");
 var fs = require("fs");
-var mu = require("mu2")
-mu.root = __dirname + '/templates';
-
-/* Setting up markdown parsing */
-var marked = require("marked");
-marked.setOptions({
-  renderer: new marked.Renderer(),
-  gfm: true,
-  tables: true,
-  breaks: false,
-  pedantic: false,
-  sanitize: true,
-  smartLists: true,
-  smartypants: false
-});
+var markdown = require("./markdown");
 
 /* Serving home page */
 
@@ -36,13 +22,10 @@ app.get('*.md', function(req, res) {
 	fs.readFile(__dirname + req.params[0]+".md", "utf8", function(err,data) {
 		console.log(__dirname + req.params[0]+".md");
 		if(err) throw err; 
-		marked(data, function(err, content) 
-			{if(err) throw err; console.log(content);
-				var stream = mu.compileAndRender('.wiki.html', {body: content});
-				util.pump(stream, res);
-			
-			
-			});
+		markdown.serve(data, function(output) {
+			util.pump(output,res);
+		});
+		
 	});				
 });
 
