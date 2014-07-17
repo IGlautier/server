@@ -1,0 +1,124 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files (x86)\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'apricot' ]
+2 info using npm@1.4.14
+3 info using node@v0.10.29
+4 verbose node symlink C:\Program Files (x86)\nodejs\\node.exe
+5 warn package.json mu2@0.5.20 No repository field.
+6 warn package.json util@0.10.3 util is also the name of a node core module.
+7 verbose cache add [ 'apricot', null ]
+8 verbose cache add name=undefined spec="apricot" args=["apricot",null]
+9 verbose parsed url { protocol: null,
+9 verbose parsed url   slashes: null,
+9 verbose parsed url   auth: null,
+9 verbose parsed url   host: null,
+9 verbose parsed url   port: null,
+9 verbose parsed url   hostname: null,
+9 verbose parsed url   hash: null,
+9 verbose parsed url   search: null,
+9 verbose parsed url   query: null,
+9 verbose parsed url   pathname: 'apricot',
+9 verbose parsed url   path: 'apricot',
+9 verbose parsed url   href: 'apricot' }
+10 silly lockFile 0af1d712-apricot apricot
+11 verbose lock apricot C:\Users\Fateweaver\AppData\Roaming\npm-cache\0af1d712-apricot.lock
+12 silly lockFile 0af1d712-apricot apricot
+13 silly lockFile 0af1d712-apricot apricot
+14 verbose addNamed [ 'apricot', '' ]
+15 verbose addNamed [ null, '*' ]
+16 silly lockFile 565a228c-apricot apricot@
+17 verbose lock apricot@ C:\Users\Fateweaver\AppData\Roaming\npm-cache\565a228c-apricot.lock
+18 silly addNameRange { name: 'apricot', range: '*', hasData: false }
+19 verbose url raw apricot
+20 verbose url resolving [ 'https://registry.npmjs.org/', './apricot' ]
+21 verbose url resolved https://registry.npmjs.org/apricot
+22 info trying registry request attempt 1 at 12:12:20
+23 http GET https://registry.npmjs.org/apricot
+24 http 200 https://registry.npmjs.org/apricot
+25 silly registry.get cb [ 200,
+25 silly registry.get   { date: 'Thu, 17 Jul 2014 11:12:20 GMT',
+25 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+25 silly registry.get     etag: '"BN034064HJ2J98NLO1Q5IMEU7"',
+25 silly registry.get     'content-type': 'application/json',
+25 silly registry.get     'cache-control': 'max-age=30',
+25 silly registry.get     'content-length': '11834',
+25 silly registry.get     'accept-ranges': 'bytes',
+25 silly registry.get     via: '1.1 varnish',
+25 silly registry.get     age: '0',
+25 silly registry.get     'x-served-by': 'cache-lcy1122-LCY',
+25 silly registry.get     'x-cache': 'MISS',
+25 silly registry.get     'x-cache-hits': '0',
+25 silly registry.get     'x-timer': 'S1405595540.124176,VS0,VE162',
+25 silly registry.get     vary: 'Accept',
+25 silly registry.get     'keep-alive': 'timeout=10, max=50',
+25 silly registry.get     connection: 'Keep-Alive' } ]
+26 silly addNameRange number 2 { name: 'apricot', range: '*', hasData: true }
+27 silly addNameRange versions [ 'apricot',
+27 silly addNameRange   [ '0.0.1',
+27 silly addNameRange     '0.0.2',
+27 silly addNameRange     '0.0.4',
+27 silly addNameRange     '0.0.4-1-patched-by-isaacs-for-path-issue',
+27 silly addNameRange     '0.0.5',
+27 silly addNameRange     '0.0.6' ] ]
+28 verbose addNamed [ 'apricot', '0.0.6' ]
+29 verbose addNamed [ '0.0.6', '0.0.6' ]
+30 silly lockFile 7aecd54b-apricot-0-0-6 apricot@0.0.6
+31 verbose lock apricot@0.0.6 C:\Users\Fateweaver\AppData\Roaming\npm-cache\7aecd54b-apricot-0-0-6.lock
+32 silly lockFile cc09bb4f-js-org-apricot-apricot-0-0-6-tgz https://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz
+33 verbose lock https://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz C:\Users\Fateweaver\AppData\Roaming\npm-cache\cc09bb4f-js-org-apricot-apricot-0-0-6-tgz.lock
+34 verbose addRemoteTarball [ 'https://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz',
+34 verbose addRemoteTarball   '21ea903f197aa7fb1ede0c8eb5301a0bb47e8ebc' ]
+35 info retry fetch attempt 1 at 12:12:20
+36 verbose fetch to= C:\Users\FATEWE~1\AppData\Local\Temp\npm-1524-HPr99ib5\registry.npmjs.org\apricot\-\apricot-0.0.6.tgz
+37 http GET https://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz
+38 http 200 https://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz
+39 silly lockFile cc09bb4f-js-org-apricot-apricot-0-0-6-tgz https://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz
+40 silly lockFile cc09bb4f-js-org-apricot-apricot-0-0-6-tgz https://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz
+41 silly lockFile 7aecd54b-apricot-0-0-6 apricot@0.0.6
+42 silly lockFile 7aecd54b-apricot-0-0-6 apricot@0.0.6
+43 silly lockFile 565a228c-apricot apricot@
+44 silly lockFile 565a228c-apricot apricot@
+45 silly resolved [ { name: 'apricot',
+45 silly resolved     version: '0.0.6',
+45 silly resolved     description: 'Apricot is a HTML / DOM parser, scraper for Nodejs. It is inspired by rubys hpricot and designed to fetch, iterate, and augment html or html fragments.',
+45 silly resolved     keywords: [ 'dom', 'javascript', 'xui' ],
+45 silly resolved     maintainers: [ [Object] ],
+45 silly resolved     licenses: [ [Object] ],
+45 silly resolved     repositories: [ [Object] ],
+45 silly resolved     dependencies: { jsdom: '> 0.2', 'node-sizzle': '*' },
+45 silly resolved     os: [ 'linux', 'macos', 'darwin', 'win' ],
+45 silly resolved     cpu: [ 'x86', 'ppc', 'x86_64', 'x64' ],
+45 silly resolved     engines: [ 'node' ],
+45 silly resolved     directories: { lib: 'lib' },
+45 silly resolved     main: './lib/apricot',
+45 silly resolved     _npmUser: { name: 'silentrob', email: 'rob@silentrob.me' },
+45 silly resolved     _id: 'apricot@0.0.6',
+45 silly resolved     devDependencies: {},
+45 silly resolved     optionalDependencies: {},
+45 silly resolved     _engineSupported: true,
+45 silly resolved     _npmVersion: '1.1.10',
+45 silly resolved     _nodeVersion: 'v0.6.13',
+45 silly resolved     _defaultsLoaded: true,
+45 silly resolved     dist:
+45 silly resolved      { shasum: '21ea903f197aa7fb1ede0c8eb5301a0bb47e8ebc',
+45 silly resolved        tarball: 'http://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz' },
+45 silly resolved     _shasum: '21ea903f197aa7fb1ede0c8eb5301a0bb47e8ebc',
+45 silly resolved     _from: 'apricot@',
+45 silly resolved     _resolved: 'https://registry.npmjs.org/apricot/-/apricot-0.0.6.tgz' } ]
+46 info install apricot@0.0.6 into C:\Users\Fateweaver\Documents\nqmWork\picosec\server
+47 info installOne apricot@0.0.6
+48 error notsup Unsupported
+48 error notsup Not compatible with your operating system or architecture: apricot@0.0.6
+48 error notsup Valid OS:    linux,macos,darwin,win
+48 error notsup Valid Arch:  x86,ppc,x86_64,x64
+48 error notsup Actual OS:   win32
+48 error notsup Actual Arch: ia32
+49 error System Windows_NT 6.2.9200
+50 error command "C:\\Program Files (x86)\\nodejs\\\\node.exe" "C:\\Program Files (x86)\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "apricot"
+51 error cwd C:\Users\Fateweaver\Documents\nqmWork\picosec\server
+52 error node -v v0.10.29
+53 error npm -v 1.4.14
+54 error code EBADPLATFORM
+55 verbose exit [ 1, true ]

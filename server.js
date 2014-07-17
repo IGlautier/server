@@ -2,7 +2,7 @@ var express = require("express");
 var app = express();
 var util = require("util");
 var fs = require("fs");
-var markdown = require("./markdown");
+var template = require("./template");
 
 /* Serving home page */
 
@@ -16,17 +16,22 @@ app.post("/user/add", function(req, res) {
 });
 
 /* serves all the md files */
-app.get('*.md', function(req, res) {
+app.get("*.md", function(req, res) {
 	console.log('Routing an md file request');
 
 	fs.readFile(__dirname + req.params[0]+".md", "utf8", function(err,data) {
 		console.log(__dirname + req.params[0]+".md");
 		if(err) throw err; 
-		markdown.serve(data, function(output) {
+		template.servemd(data, function(output) {
 			util.pump(output,res);
 		});
 		
 	});				
+});
+
+app.get("*.html", function(req, res) {
+	console.log("Routing an html file request");
+	res.sendfile(__dirname + req.params[0]+".html")
 });
 
 /* serves all the static files */

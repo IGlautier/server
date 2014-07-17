@@ -1,3 +1,4 @@
+/* Setting up moustache templates */
 var mu = require("mu2")
 mu.root = __dirname + '/templates';
 
@@ -14,14 +15,17 @@ marked.setOptions({
   smartypants: false
 });
 
-function serve(data, callback) {
+
+
+function servemd(data, callback) {
 	marked(data, function(err, content) 
-			{if(err) throw err; console.log(content);
-				var stream = mu.compileAndRender('.wiki.html', {body: content});
+			{
+				if(err) throw err; 
+				console.log("Templating an md file");
+				var stream = mu.compileAndRender('.mdwiki.html', {body: content});
 				callback(stream);
-			
-			
 			});
 }
 
-exports.serve = serve;
+
+exports.servemd = servemd;
