@@ -10,7 +10,7 @@ app.get("/", function(req, res) {
 	res.sendfile('index.html');
 });
 
-app.post("/user/add", function(req, res) { 
+app.post("/", function(req, res) { 
 	/* some server side logic */
 	res.send("OK");
 });

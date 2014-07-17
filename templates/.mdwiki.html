@@ -9,7 +9,7 @@
  <body>
   {{{body}}}
  </body>
- 
+<script type="text/javascript" src="http://localhost:5000/js/rawdeflate.js"></script>
 <script type="text/javascript">
  
 $ = function(id){ return document.getElementById(id) };
@@ -75,6 +75,7 @@ if (deflater) {
 function done_deflating(e) {
 	elements = document.getElementsByClassName('uml');
 	elements[x].setAttribute('id', encode64(e.data));
+	elements[x].innerHTML = "<img src=\"http://www.plantuml.com/plantuml/img/"+elements[x].id+"\"/>";
 	x++;
 }
 
@@ -98,16 +99,7 @@ function compress(s) {
 	var elements = document.getElementsByClassName('uml');
 
 	for (var elem = 0; elem<elements.length; elem++) {
-		compress(elements[elem].innerText);
-
-		var post = "uml="+encodeURI(elements[elem].innerText);
-		xmlhttp=new XMLHttpRequest();
-		xmlhttp.open("POST","http://nickallott.com/specChain/uml.php",false);
-		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-		xmlhttp.send(post);
-		xmlDoc=xmlhttp.response;
-		elements[elem].innerHTML = xmlDoc;
-		
+		compress(elements[elem].innerText);	
 	}
 }
  </script>
