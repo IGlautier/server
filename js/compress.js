@@ -61,7 +61,7 @@ if (deflater) {
 function done_deflating(e) {
 	elements = document.getElementsByClassName('uml');
 	elements[x].setAttribute('id', encode64(e.data));
-	elements[x].innerHTML = "<img src=\"http://www.plantuml.com/plantuml/img/"+elements[x].id+"\"/>";
+	elements[x].innerHTML = "<img src=\""+settings.markdownUrl+"/"+elements[x].id+"\"/>";
 	x++;
 }
 

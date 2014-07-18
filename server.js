@@ -3,7 +3,7 @@ var app = express();
 var util = require("util");
 var fs = require("fs");
 var template = require("./template");
-
+var settings = require("./settings.json");
 /* Serving home page */
 
 app.get("/", function(req, res) {

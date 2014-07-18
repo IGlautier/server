@@ -9,13 +9,18 @@
  <body>
   {{{body}}}
  </body>
-<script type="text/javascript" src="http://localhost:5000/js/rawdeflate.js"></script>
-<script type="text/javascript" src="http://localhost:5000/js/compress.js"></script>
+<script type="text/javascript" src="{{{sitename}}}/js/rawdeflate.js"></script>
+<script type="text/javascript" src="{{{sitename}}}/js/compress.js"></script>
 <script type="text/javascript">
 /* Plant uml processing */
 var x = 0;
-
+xmlhttp=new XMLHttpRequest();
+xmlhttp.open("GET","{{{sitename}}}/settings.json",false);
+xmlhttp.send();
+xmlDoc=xmlhttp.response;
+var settings = JSON.parse(xmlDoc);
 window.onload = function () { 
+
 	var elements = document.getElementsByClassName('uml');
 
 	for (var elem = 0; elem<elements.length; elem++) {

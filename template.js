@@ -1,3 +1,5 @@
+var settings = require("./settings.json");
+
 /* Setting up moustache templates */
 var mu = require("mu2")
 mu.root = __dirname + '/templates';
@@ -22,7 +24,7 @@ function servemd(data, callback) {
 			{
 				if(err) throw err; 
 				console.log("Templating an md file");
-				var stream = mu.compileAndRender('.mdwiki.html', {body: content});
+				var stream = mu.compileAndRender('.mdwiki.html', {body: content, sitename: settings.sitename});
 				callback(stream);
 			});
 }
