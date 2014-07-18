@@ -4,11 +4,30 @@ var util = require("util");
 var fs = require("fs");
 var template = require("./template");
 var settings = require("./settings.json");
+var router = require("./router.js");
 /* Serving home page */
 
 app.get("/", function(req, res) {
-	res.sendfile('index.html');
+	fs.readFile(__dirname + "/index.md", "utf8", function(err,data) {
+		console.log(__dirname + "/index.md");
+		if(err) throw err; 
+		template.servemd(data, function(output) {
+			util.pump(output,res);
+		});
+		
+	});	
 });
+
+/*app.get("/*", function(req, res) {
+	fs.readFile(__dirname + req.params[0]+"/index.md", "utf8", function(err,data) {
+		console.log(__dirname + req.params[0]+"/index.md");
+		if(err) throw err; 
+		template.servemd(data, function(output) {
+			util.pump(output,res);
+		});
+		
+	});	
+});*/
 
 app.post("/", function(req, res) { 
 	/* some server side logic */
@@ -29,15 +48,22 @@ app.get("*.md", function(req, res) {
 	});				
 });
 
-app.get("*.html", function(req, res) {
-	console.log("Routing an html file request");
-	res.sendfile(__dirname + req.params[0]+".html")
-});
+
 
 /* serves all the static files */
 app.get(/^(.+)$/, function(req, res){ 
 	console.log('static file request : ' + util.inspect(req.params, false, null));
-	res.sendfile( __dirname + req.params[0]); 
+	fs.lstat(__dirname + req.params[0], router.directory(__dirname + req.params[0], function(isDir) {
+		if (isDir) fs.readFile(__dirname + req.params[0]+"/index.md", "utf8", function(err,data) {
+		console.log(__dirname + req.params[0]+"/index.md");
+		if(err) throw err; 
+		template.servemd(data, function(output) {
+			util.pump(output,res);
+		});
+		
+	});
+		else res.sendfile(__dirname + req.params[0]);	
+	}));
 });
 
 
