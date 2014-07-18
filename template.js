@@ -19,15 +19,15 @@ marked.setOptions({
 
 
 
-function servemd(data, callback) {
+function templatemd(data, callback) {
 	marked(data, function(err, content) 
-			{
-				if(err) throw err; 
-				console.log("Templating an md file");
-				var stream = mu.compileAndRender('.mdwiki.html', {body: content, sitename: settings.sitename});
-				callback(stream);
-			});
+		{
+			if(err) throw err; 
+			console.log("Templating an md file");
+			var stream = mu.compileAndRender('.mdwiki.html', {body: content, sitename: settings.sitename});
+			callback(stream);
+		});
 }
 
 
-exports.servemd = servemd;
+exports.templatemd = templatemd;
