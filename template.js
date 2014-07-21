@@ -29,5 +29,16 @@ function templatemd(data, callback) {
 		});
 }
 
+function templateconcat(data, callback) {
+	marked(data, function(err, content) 
+		{
+			if(err) throw err; 
+			console.log("Templating concatenation page");
+			var stream = mu.compileAndRender('.concat.html', {title: "Concatenate", sitename: settings.sitename});
+			callback(stream);
+		});
+}
+
 
 exports.templatemd = templatemd;
+exports.templateconcat = templateconcat;

@@ -4,7 +4,6 @@ var util = require("util");
 var fs = require("fs");
 var template = require("./template");
 var settings = require("./settings.json");
-var router = require("./router.js");
 /* Serving home page */
 
 app.get("/", function(req, res) {
@@ -20,6 +19,12 @@ app.get("/", function(req, res) {
 			});
 		}	
 	});	
+});
+
+app.get("/concatenate", function(req, res) {
+	template.templateconcat(data, function(output) {
+		util.pump(output,res);
+	});
 });
 
 /* serves all the md files */
@@ -80,18 +85,7 @@ app.get(/^(.+)$/, function(req, res){
 			res.sendfile(__dirname + req.params[0]);
 		}
 	});
-	/*fs.lstat(__dirname + req.params[0], router.directory(__dirname + req.params[0], function(isDir) {
-		if (isDir) 
-			fs.readFile(__dirname + req.params[0]+"/index.md", "utf8", function(err,data) {
-			console.log(__dirname + req.params[0]+"/index.md");
-			if(err) throw err; 
-			template.templatemd(data, function(output) {
-				util.pump(output,res);
-			});
-		
-		});
-		else res.sendfile(__dirname + req.params[0]);	
-	}));*/
+	
 });
 
 

@@ -1,0 +1,31 @@
+ <!DOCTYPE html>
+<html>
+ <head>
+  <link rel="stylesheet" type="text/css" href="http://picosec.org:8080/style.css">
+  <meta charset="UTF-8">
+  <img id="logo" src="http://picosec.org:8080/logo-text.jpg" width="200px"/>
+  <title>{{title}}</title>
+ </head>
+ <body>
+ </body>
+<script type="text/javascript" src="{{{sitename}}}/js/concat.js"></script>
+<script type="text/javascript" src="{{{sitename}}}/js/rawdeflate.js"></script>
+<script type="text/javascript" src="{{{sitename}}}/js/compress.js"></script>
+<script type="text/javascript">
+/* Plant uml processing */
+var x = 0;
+xmlhttp=new XMLHttpRequest();
+xmlhttp.open("GET","{{{sitename}}}/settings.json",false);
+xmlhttp.send();
+xmlDoc=xmlhttp.response;
+var settings = JSON.parse(xmlDoc);
+window.onload = function () { 
+
+	var elements = document.getElementsByClassName('uml');
+
+	for (var elem = 0; elem<elements.length; elem++) {
+		compress(elements[elem].innerText);	
+	}
+}
+ </script>
+ </html>

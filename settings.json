@@ -1,4 +1,5 @@
 {
   "sitename" : "http://localhost:5000",
-  "markdownUrl" : "http://www.plantuml.com/plantuml/img"
+  "markdownUrl" : "http://www.plantuml.com/plantuml/img",
+  "concatRoot" : "http://localhost:5000/index.md"
 }
