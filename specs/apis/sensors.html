@@ -1,0 +1,1133 @@
+<!DOCTYPE html PUBLIC "html">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="picosec-apis.css" media="screen">
+<script type="text/javascript" src="picosec-apis.js"></script><title>
+ The Generic Sensor API 
+      </title>
+</head>
+<body onload="prettyPrint()">
+<div id="header">
+<img alt="picosec" class="pull-left" src="picosec_logo.png" style=""><h1 class="pull-left"><a href="/">picosec developer's documentation</a></h1>
+<button id="btn"><ul>
+<li><a href="http://picosec.org/" title="Foundation site">Foundation website</a></li>
+<li><a href="https://developer.picosec.org/" title="Developer site">Developer Portal</a></li>
+</ul>
+			Other Resources
+			
+			</button>
+</div>
+<div id="content">
+<div class="description">
+      <p>
+ The picosec Generic Sensor API provides Web Applications with an API to access data from sensors in the device or in another device.      </p>
+ 
+     </div>
+<div id="menu"><ul class="toc">
+<li><a href="#intro">Introduction</a></li>
+<li>
+<a href="#interfaces">Interfaces and Dictionaries</a><ul>
+<li><a href="#::Sensor">Sensor</a></li>
+<li><a href="#::ConfigureSensorOptions">ConfigureSensorOptions</a></li>
+<li><a href="#::GeoPosition">GeoPosition</a></li>
+<li><a href="#::PendingSensorConfigOp">PendingSensorConfigOp</a></li>
+<li><a href="#::SensorEvent">SensorEvent</a></li>
+</ul>
+</li>
+<li>
+<a href="#callbacks">Callbacks</a><ul><li><a href="#::SensorErrorCB"><code>SensorErrorCB</code></a></li></ul>
+</li>
+<li>
+<a href="#enums">Enums</a><ul>
+<li><a href="#::EventFireMode"><code>EventFireMode</code></a></li>
+<li><a href="#::Accuracy"><code>Accuracy</code></a></li>
+</ul>
+</li>
+<li><a href="#api-features">Features</a></li>
+<li><a href="#full-webidl">Full WebIDL</a></li>
+</ul></div>
+<div class="api" id="">
+<div>
+<h1>
+ The Generic Sensor API 
+      </h1>
+
+</div>
+<h2>Authors</h2>
+
+<div><p class="copyright"><small>© 2014 <a href="http://www.picosec.org/">picosec consortium</a>.</small></p></div>
+<h2 id="method-summary">Summary of Methods</h2>
+<table class="informaltable">
+<thead><tr>
+<th>Interface</th>
+<th>Method</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><a href="#::Sensor">Sensor</a></td>
+<td>
+<a href="#::PendingSensorConfigOp">PendingSensorConfigOp</a> <a href="#configureSensorid121176">configureSensor</a>(ConfigureSensorOptions options, VoidFunction successCB, SensorErrorCB errorCB)</td>
+</tr>
+<tr>
+<td><a href="#::PendingSensorConfigOp">PendingSensorConfigOp</a></td>
+<td>void <a href="#cancelid118708">cancel</a>()</td>
+</tr>
+<tr>
+<td><a href="#::SensorEvent">SensorEvent</a></td>
+<td>void <a href="#initSensorEventid130259">initSensorEvent</a>(DOMString type, boolean bubbles, boolean cancelable, DOMString sensorType, DOMString sensorId, Accuracy accuracy, unsigned long rate, EventFireMode eventFireMode, any sensorValues, GeoPosition position)</td>
+</tr>
+</tbody>
+</table>
+<h2 class="section" id="intro">Introduction</h2>
+<div class="description">
+      <p>
+The API is agnostic to underlying low level methods for sensor discovery and communication with sensors. However, the sensor API should be used
+in combination with the general picosec service discovery methods findServices() and bind(). The sensors services can be located in the user's personal zone or be shared on the current network.
+      </p>
+      <p>
+The API consists of two interfaces: <br>- A sensor interface that provides attributes for the sensors and a method to configure a selected sensor.<br>- A DOM level 3 event that provides sensor data.<br>      </p>
+      <p>
+The section <a href="#api-features">Features</a> specifies a set of basic example sensor types supported by this API. 
+This list of sensor types could easily be extended with additional sensor types by adding feature URIs and JSON objects
+for the additional sensors.
+      </p>
+      <p>
+Implementation notes:<br>- From the security point of view an extensible set of features identifying the various sensor types is reported; this allows a granular control on 
+the type os sensor that can be accessed. Another feature (sensor.read) that does not allow access to configuration capabilities has been added.
+This model may be modified due to further studies that will follow during implementation.<br>- Consider a visual warning on the device when the sensor is accessed, to avoid eavesdropping / privacy invasion by a remote or local application.<br>- Consider roaming costs for accessing remote sensors through the mobile network. An implementation might provide 'roaming' and 'non-roaming' profiles.<br>- Avoid unnecessary high rates of sensor events. Consider battery drain.<br> 
+      </p>
+     </div>
+<h2 class="section" id="interfaces">Interfaces and Dictionaries</h2>
+<div class="interface" id="::Sensor">
+<h3 class="section">Interface Sensor</h3>
+<div class="brief"><p>
+ This interface defines sensor properties. It is a sensor specific extension to the interface Service in the ServiceDiscovery module.
+The added attributes correspond to Android sensor API attributes.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">    interface Sensor : <a href="servicediscovery.html#::Service">Service</a> {
+ 
+
+        readonly attribute float?          maximumRange;
+
+
+        readonly attribute unsigned long?   minDelay;
+
+
+        readonly attribute float?         power;
+
+
+        readonly attribute float?         resolution;
+
+
+        readonly attribute DOMString?      vendor;  
+
+
+        readonly attribute unsigned long?  version; 
+
+
+        <a href="#::PendingSensorConfigOp">PendingSensorConfigOp</a> configureSensor (<a href="#::ConfigureSensorOptions">ConfigureSensorOptions</a> options, VoidFunction successCB, optional <a href="#::SensorErrorCB">SensorErrorCB</a> errorCB);
+     };</pre>
+<div class="example">
+<h5>Code example</h5>
+<pre name="code" class="examplecode prettyprint">        // Handle that can be used to cancel the ongoing asynchronous discovery process.
+        var findHandle = 0;
+
+        // Handle from service.bind.
+        var sensorHandle = 0;
+
+        // Array of found temperature sensors object.
+        var availableTempSensors = {};
+                 
+        // Callback method that display a list of found sensors in a selection list
+        // The selection list is dynamically extended every time a new sensor is discovered.
+        function sensorFoundCB(sensor) {
+
+                var selectlist = document.getElementById('sensorlist');
+                var option = document.createElement('option');
+                option.value = sensor.id;
+                option.appendChild(document.createTextNode(sensor.displayName));
+                availableTempSensors [sensor.id] = sensor;
+                selectlist.appendChild(option);
+
+        }
+                      
+ 
+       // Callback when bind has been successfully executed on the service object. The Sensor is authorized and ready to use
+        function bindCB(mySensor) {
+
+                alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id + ' selected');
+               
+
+                // Configure the sensor.
+                mySensor.configureSensor ( {timeout: 120, rate: 5000, eventFireMode: "valuechange"}, 
+                                           successHandler () {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
+                                                                    ' is configured') },
+                                           errorHandler (error) {alert('Sensor ' + mySensor.displayName + ' with ID: ' + mySensor.id +
+                                                                       ' configuration failed' + ' with error: ' + error.name)} );
+
+               
+                // Start listening to sensor events and log values. 
+                mySensor.addEventListener('sensor', function (event) {
+                          var values = JSON.parse(event.sensorValues);
+                          console.log(values.temperature);
+
+                          var temp = document.getElementById('temp');
+                          temp.innerHTML = "Current temperature is: " + values.temperature;
+
+
+                }, true); 
+
+        }
+
+
+       // Callback method that is invoked when user selects an option in the sensor selection list 
+        function sensorSelected(sensor) {
+
+                // Stops the findServices operation
+                findHandle.cancel();
+
+                // Binds to the sensor API to initiate an authorized objects used to
+                // invoke services.  
+                sensorHandle = sensor.bind({onBind:bindCB});                               
+                
+        }
+        
+        // Get list of temperature sensors registered in the device through the Service Discovery findServices() method
+        findHandle  = window.picosec.discovery.findServices({api:'http://picosec.org/api/sensors/temperature'}, {onFound:sensorFoundCB});
+ 
+       // Handle user selection of sensor
+        var sensorlist = document.getElementById('sensorlist');
+        sensorlist.addEventListener("change", function (e) {
+                                var sensor = availableTempSensors[e.target.value];
+                                if (sensor) {
+                                    sensorSelected(sensor);
+                                }
+        }, false);
+
+
+ </pre>
+</div>
+      
+    <div class="attributes">
+<h4>Attributes</h4>
+<dl>
+<dt class="attribute" id="Sensor_maximumRange"><code><span class="attrName"><b>
+                readonly
+            float? maximumRange</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Max range of sensor in the sensors unit.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Sensor_minDelay"><code><span class="attrName"><b>
+                readonly
+            unsigned long? minDelay</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Min delay of sensor allowed between two events in microsecond or zero if this sensor only returns a value when the data it's measuring changes.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Sensor_power"><code><span class="attrName"><b>
+                readonly
+            float? power</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Power consumption of sensor in mA used by this sensor while in use. 
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Sensor_resolution"><code><span class="attrName"><b>
+                readonly
+            float? resolution</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Resolution of the sensor in the sensors unit.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Sensor_vendor"><code><span class="attrName"><b>
+                readonly
+            DOMString? vendor</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Vendor string of this sensor.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Sensor_version"><code><span class="attrName"><b>
+                readonly
+            unsigned long? version</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Version of the sensors module.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+</dl>
+</div>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="configureSensorid121176"><code><b><span class="methodName">configureSensor</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Configures a sensor.
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint"><a href="#::PendingSensorConfigOp">PendingSensorConfigOp</a> configureSensor(<a href="#::ConfigureSensorOptions">ConfigureSensorOptions</a> options, VoidFunction successCB, optional <a href="#::SensorErrorCB">SensorErrorCB</a> errorCB);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>options</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::ConfigureSensorOptions">ConfigureSensorOptions</a>
+</li>
+<li>
+<b>Description: </b>
+ Sensor configuration options. 
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>successCB</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>VoidFunction</li>
+<li>
+<b>Description: </b>
+ Callback issued when sensor configuration succeeded.
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>errorCB</b><ul>
+<li>
+<b>Optional: </b>Yes.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::SensorErrorCB">SensorErrorCB</a>
+</li>
+<li>
+<b>Description: </b>
+ Callback issued if sensor configuration fails.  
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+<div class="returntype">
+<h5>Return value</h5>
+ A pending operation object making it possible to cancel the configureSensor operation     
+            </div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::ConfigureSensorOptions">
+<h3 class="section">Dictionary ConfigureSensorOptions</h3>
+<div class="brief"><p>
+ ConfigureSensorOptions interface definition
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">    dictionary ConfigureSensorOptions {
+
+
+
+       unsigned short timeout;
+
+
+       unsigned long? rate;
+       
+
+       EventFireMode? eventFireMode;
+
+
+       <a href="#::GeoPosition">GeoPosition</a>? position;
+
+
+       DOMString? config;
+        };</pre>
+<div class="attributes">
+<h4>Dictionary Members</h4>
+<dl>
+<dt class="attribute" id="ConfigureSensorOptions_timeout"><code><span class="attrName"><b>unsigned short timeout</b></span></code></dt>
+<dd><div class="brief"><p>
+ A timeout value for when configureSensor() is canceled in seconds between 0-65535. Default value is 120 seconds. 0 means infinite. 
+          </p></div></dd>
+<dt class="attribute" id="ConfigureSensorOptions_rate"><code><span class="attrName"><b>unsigned long? rate</b></span></code></dt>
+<dd><div class="brief"><p>
+ The requested rate of the sensor data.
+It is the time interval before a new event is generated. The value is expressed in ms. If the interval is too small for the sensor
+(that is it is unable to generate data at the selected rate) it shall use the maximum rate it can support.
+          </p></div></dd>
+<dt class="attribute" id="ConfigureSensorOptions_eventFireMode"><code><span class="attrName"><b>EventFireMode? eventFireMode</b></span></code></dt>
+<dd><div class="brief"><p>
+ The requested sensor event fire mode.
+          </p></div></dd>
+<dt class="attribute" id="ConfigureSensorOptions_position"><code><span class="attrName"><b><a href="#::GeoPosition">GeoPosition</a>? position</b></span></code></dt>
+<dd><div class="brief"><p>
+ The position of the sensor.
+This value may be ignored by the sensor if it retrieves position in a different way (for example has a gps module onboard)
+          </p></div></dd>
+<dt class="attribute" id="ConfigureSensorOptions_config"><code><span class="attrName"><b>DOMString? config</b></span></code></dt>
+<dd><div class="brief"><p>
+ Generic configurations string.
+This string is in JSON format and can be used for additional sensors that need extra configuration parameters.
+The format of the string must be specified by the sensor developer.
+          </p></div></dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::GeoPosition">
+<h3 class="section">Dictionary GeoPosition</h3>
+<div class="brief"><p>
+ GeoPosition interface definition
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">    dictionary GeoPosition {
+
+
+       unsigned long latitude;
+
+
+       unsigned long longitude;
+     };</pre>
+<div class="attributes">
+<h4>Dictionary Members</h4>
+<dl>
+<dt class="attribute" id="GeoPosition_latitude"><code><span class="attrName"><b>unsigned long latitude</b></span></code></dt>
+<dd><div class="brief"><p>
+ Latitude. 
+          </p></div></dd>
+<dt class="attribute" id="GeoPosition_longitude"><code><span class="attrName"><b>unsigned long longitude</b></span></code></dt>
+<dd><div class="brief"><p>
+ Longitude.
+          </p></div></dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::PendingSensorConfigOp">
+<h3 class="section">Interface PendingSensorConfigOp</h3>
+<div class="brief"><p>
+ The PendingSensorConfigOp interface
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">     interface PendingSensorConfigOp {
+
+
+        void cancel ();
+     };</pre>
+<div class="description">
+        <p>
+The PendingSensorConfigOp interface describes the object that is returned by the asynchronous configure sensor method. It makes it possible to abort
+this operation to a stop if it hasn't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+        </p>
+       </div>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="cancelid118708"><code><b><span class="methodName">cancel</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Method Cancel
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void cancel();
+</pre>
+</div>
+<div class="description">
+          <p>
+Cancel the pending configure sensor asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+name "AbortError". If the configuration is no longer under control of the calling process, the cancel function will be ignored and all neccessary 'housekeeping functions' 
+required after starting the configuration process will be performed as if the cancel had never been issued.
+          </p>
+         </div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::SensorEvent">
+<h3 class="section">Interface SensorEvent</h3>
+<div class="brief"><p>
+ This interface defines the "genericsensor" event type.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">   interface SensorEvent : <a href="http://www.w3.org/TR/DOM-Level-3-Events/#events-Event">Event</a> {
+
+
+    readonly attribute DOMString sensorType;
+
+
+    readonly attribute DOMString sensorId;
+
+
+
+    readonly attribute Accuracy accuracy;
+
+ 
+
+    readonly attribute unsigned long rate;
+
+
+    readonly attribute EventFireMode eventFireMode;
+
+
+    readonly attribute any sensorValues;
+
+
+     readonly attribute <a href="#::GeoPosition">GeoPosition</a>?  position;
+
+
+
+    void initSensorEvent(DOMString type,
+                         boolean bubbles,
+                         boolean cancelable,
+                         DOMString sensorType,
+                         DOMString sensorId,
+                         Accuracy accuracy,
+                         unsigned long rate,
+                         EventFireMode eventFireMode, 
+                         any sensorValues,
+                         <a href="#::GeoPosition">GeoPosition</a> position);
+    };</pre>
+<div class="description">
+        <p>
+Registration for generic sensor events is achieved by calling addEventListener instantiated on the selected sensor object with event type set to "sensor" (see code example in the beginning of this specification).<br>To stop listening to a sensor removeEventListener is called.
+        </p>
+       </div>
+      
+    <div class="attributes">
+<h4>Attributes</h4>
+<dl>
+<dt class="attribute" id="SensorEvent_sensorType"><code><span class="attrName"><b>
+                readonly
+            DOMString sensorType</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The type of sensor. This is a URI defining the sensor type according 
+to the defined sensor "feature" URI strings. See section "5 Features".
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="SensorEvent_sensorId"><code><span class="attrName"><b>
+                readonly
+            DOMString sensorId</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The unique identity of the of the specific sensor
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="SensorEvent_accuracy"><code><span class="attrName"><b>
+                readonly
+            Accuracy accuracy</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The accuracy of the sensor
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="SensorEvent_rate"><code><span class="attrName"><b>
+                readonly
+            unsigned long rate</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The rate of the sensor data.
+This value will be 0 if the rate is undefined or eventFireMode is set to valuechange.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="SensorEvent_eventFireMode"><code><span class="attrName"><b>
+                readonly
+            EventFireMode eventFireMode</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The event fire mode the sensor.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="SensorEvent_sensorValues"><code><span class="attrName"><b>
+                readonly
+            any sensorValues</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Sensor values.
+This is a JSON object that contains the values that the sensor delivers. 
+See section "5 Features" for specification of the delivered JSON object for
+each sensor type.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="SensorEvent_position"><code><span class="attrName"><b>
+                readonly
+            <a href="#::GeoPosition">GeoPosition</a>? position</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Position of the sensor.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+</dl>
+</div>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="initSensorEventid130259"><code><b><span class="methodName">initSensorEvent</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Method to set initial values of sensor event.  
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void initSensorEvent(DOMString type, boolean bubbles, boolean cancelable, DOMString sensorType, DOMString sensorId, Accuracy accuracy, unsigned long rate, EventFireMode eventFireMode, any sensorValues, <a href="#::GeoPosition">GeoPosition</a> position);
+</pre>
+</div>
+<div class="description">
+          <p>
+The initSensorEvent() method must initialize the event in a manner analogous 
+to the initEvent() method in http://www.w3.org/TR/2010/WD-DOM-Level-3-Events-20100907/.
+The method can for example be used with document.createEvent() and EventTarget.dispatchEvent() 
+to simulate a specific event.
+The sensorType, sensorId, accuracy, rate, eventFireMode and sensorvalues 
+arguments must initialize the attributes with the same names.
+          </p>
+         </div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>type</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMString</li>
+<li>
+<b>Description: </b>
+ Event type i.e. 'sensor'
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>bubbles</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>boolean</li>
+<li>
+<b>Description: </b>
+ True if event bubbles
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>cancelable</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>boolean</li>
+<li>
+<b>Description: </b>
+ True if event cancelable
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>sensorType</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMString</li>
+<li>
+<b>Description: </b>
+ Sensor type as a URI
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>sensorId</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMString</li>
+<li>
+<b>Description: </b>
+ The unique identity of the specific sensor
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>accuracy</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>Accuracy</li>
+<li>
+<b>Description: </b>
+ Accuracy of sensor data
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>rate</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>unsigned long</li>
+<li>
+<b>Description: </b>
+ Rate of sensor data event
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>eventFireMode</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>EventFireMode</li>
+<li>
+<b>Description: </b>
+ Mode of firing events
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>sensorValues</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>any</li>
+<li>
+<b>Description: </b>
+ Sensor values as a JSON object
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>position</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::GeoPosition">GeoPosition</a>
+</li>
+<li>
+<b>Description: </b>
+ Position of the sensor
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="callbacks" id="callbacks">
+<h2 class="section">Callbacks</h2>
+<div class="callback" id="::SensorErrorCB">
+<h3 class="section"><code>SensorErrorCB</code></h3>
+<div class="brief"><p>
+ The SensorErrorCB method is called if an error occurs during the configureSensor() process.  
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">    callback SensorErrorCB = void (DOMError error);</pre>
+<div class="synopsis">
+<h6>Signature</h6>
+<pre>void SensorErrorCB(DOMError error);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+      <li class="param">
+<b>error</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMError</li>
+<li>
+<b>Description: </b>
+ <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
+went wrong in an unsuccessful configureSensor() asynchronous operation. The following error names cold be issued:<br>- "SyntaxError": Input parameters did not match the expected pattern.<br>- "NotSupportedError": Sensor configuration not supported.<br>- "InvalidModificationError": Sensor can not be configured in this way.<br>- "AbortError": Operation was aborted by the user.<br>- "TimeoutError": The operation timed out.
+            </li>
+</ul>
+</li>
+    </ul>
+</div>
+</div>
+</div>
+<div class="enums" id="enums">
+<h2 class="section">Enums</h2>
+<div class="enum" id="EventFireMode_enum">
+<h3 class="section"><code>EventFireMode</code></h3>
+<div class="brief"><p>
+ Sensor event fire mode.<br>- fixedinterval = Events fired with a fixed time interval.<br>- valuechange = Events fired when value changes. This is the default value.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">    enum EventFireMode { "fixedinterval", "valuechange"};</pre>
+<div class="enumvalues">
+<h4>Values</h4>
+<dl>
+<dt class="enumvalue"><code>fixedinterval</code></dt>
+<dd></dd>
+<dt class="enumvalue"><code>valuechange</code></dt>
+<dd></dd>
+</dl>
+</div>
+</div>
+<div class="enum" id="Accuracy_enum">
+<h3 class="section"><code>Accuracy</code></h3>
+<div class="brief"><p>
+ Sensor event accuracy.<br>high = The sensor is reporting data with maximum accuracy<br>medium = The sensor is reporting data with an average level of accuracy, calibrating with the environment may improve the reading.<br>low = The sensor is reporting with low accuracy, calibrating with the environment is needed.<br>unreliable = The sensor data cannot be trusted, calibrating is needed or the environment does not allow reading.<br>unavailable = The sensor is not available and no sensor data can be provided. This accuracy attribute will for example take this value when contact is lost with a sensor using Bluetooth communication.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">   enum Accuracy { "high", "medium", "low", "unreliable", "unavailable"};</pre>
+<div class="enumvalues">
+<h4>Values</h4>
+<dl>
+<dt class="enumvalue"><code>high</code></dt>
+<dd></dd>
+<dt class="enumvalue"><code>medium</code></dt>
+<dd></dd>
+<dt class="enumvalue"><code>low</code></dt>
+<dd></dd>
+<dt class="enumvalue"><code>unreliable</code></dt>
+<dd></dd>
+<dt class="enumvalue"><code>unavailable</code></dt>
+<dd></dd>
+</dl>
+</div>
+</div>
+</div>
+<h2 class="section" id="api-features">Features</h2>
+<div id="def-api-features" class="def-api-features">
+<p>This section lists the URIs used to declare the features of this API. The feature URIs are used by the developer in:</p>
+<ul>
+<li>The application's config.xml file to declare requested features.</li>
+<li>As identifier for serviceType in the picosec Discovery API's findServices() method.</li>
+</ul>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors</dt>
+<dd><div class="description">
+          <p>
+Identifies all the sensor types. 
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/read</dt>
+<dd><div class="description">
+          <p>
+Identifies all the sensor types limited to read access only, i.e. access to 
+configureSensor is not supported.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/light</dt>
+<dd><div class="description">
+          <p>
+Identifies the light sensor type.<br> 
+The sensorValues attribute of SensorEvent is the following JSON object:<br>          </p>
+          <p>
+{<br>"lightlevel": &lt;number&gt;<br>}<br>The value of "lightlevel" is the measured ambient light level around the device 
+in SI lux units.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/light/read</dt>
+<dd><div class="description">
+          <p>
+Identifies the light sensor type limited to read access only, i.e. access to 
+configureSensor is not supported. <br>The sensorValues attribute of SensorEvent has the same definition as for
+http://picosec.org/api/sensors/light.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/noise</dt>
+<dd><div class="description">
+          <p>
+Identifies the noise sensor type. <br>The sensorValues attribute of SensorEvent is the following JSON object:<br>  
+{<br>"noiselevel": &lt;number&gt;<br>}<br>The value of "noiselevel" is the measured ambient noise around the device, DB(SPL).
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/noise/read</dt>
+<dd><div class="description">
+          <p>
+Identifies the noise sensor type limited to read access only, i.e. access 
+to configureSensor is not supported.<br>The sensorValues attribute of SensorEvent has the same definition as for 
+http://picosec.org/api/sensors/noise.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/temperature</dt>
+<dd><div class="description">
+          <p>
+Identifies the temperature sensor type. <br>The sensorValues attribute of SensorEvent is the following JSON object:<br>  
+{<br>"temperature": &lt;number&gt;<br>}<br>The value of "temperature" is the measured ambient temperature around the device, 
+degrees Celsius.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/temperature/read</dt>
+<dd><div class="description">
+          <p>
+Identifies the temperature sensor type limited to read access only, i.e. access 
+to configureSensor is not supported. <br>The sensorValues attribute of SensorEvent has the same definition as for 
+http://picosec.org/api/sensors/temperature.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/pressure</dt>
+<dd><div class="description">
+          <p>
+Identifies the pressure sensor type. <br>The sensorValues attribute of SensorEvent is the following JSON object:<br>  
+{<br>"pressure": &lt;number&gt;<br>}<br>The value of "pressure" is the measured atmospheric pressure around the device 
+in hPa (millibar).
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/pressure/read</dt>
+<dd><div class="description">
+          <p>
+Identifies the pressure sensor type limited to read access only, i.e. access 
+to configureSensor is not supported.<br>The sensorValues attribute of SensorEvent has the same definition as for 
+http://picosec.org/api/sensors/pressure.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/proximity</dt>
+<dd><div class="description">
+          <p>
+Identifies the proximity sensor type. <br>The sensorValues attribute of SensorEvent is the following JSON object:<br>  
+{<br>"distance": &lt;number&gt;,<br>"maxdistance": &lt;number&gt;,<br>"mindistance": &lt;number&gt;,<br> 
+"near": &lt;boolean&gt;<br>}<br>The value of "distance" is the proximity of the hosting device to a physical 
+object (i.e., some value between the maximum sensing distance and the minimum 
+sensing distance), in centimeters. This member is OPTIONAL.<br>The value of "maxdistance" is the maximum distance at which the sensor can 
+detect a physical object, in centimeters. This member is OPTIONAL but MUST
+be present if the "distance" member is present.<br>The value of "mindistance" is the minimum distance at which the sensor can 
+detect a physical object, in centimeters. This member is OPTIONAL but MUST
+be present if the "distance" member is present.<br>The value of "near" is a user-agent- and platform-specific approximation of 
+the closeness of a physical object with the hosting device. 
+This member is OPTIONAL.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/proximity/read</dt>
+<dd><div class="description">
+          <p>
+Identifies the proximity sensor type limited to read access only, i.e. access 
+to configureSensor is not supported.<br>The sensorValues attribute of SensorEvent has the same definition as for 
+http://picosec.org/api/sensors/proximity.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/humidity</dt>
+<dd><div class="description">
+          <p>
+Identifies the relative humidity sensor type.<br>The sensorValues attribute of SensorEvent is the following JSON object:<br>  
+{<br>"humidity": &lt;number&gt;<br>}<br>The value of "humidity" is the measured relative humidity around the device 
+in percent. 
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/humidity/read</dt>
+<dd><div class="description">
+          <p>
+Identifies the relative humidity sensor type limited to read access only, 
+i.e. access to configureSensor is not supported.<br>The sensorValues attribute of SensorEvent has the same definition as for 
+http://picosec.org/api/sensors/humidity.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/heartratemonitor</dt>
+<dd><div class="description">
+          <p>
+Identifies a heart rate monitor sensor type. <br>The sensorValues attribute of SensorEvent is the following JSON object:<br>  
+{<br>"heartrate": &lt;number&gt;<br>}<br>The value of "heartrate" is the measured heart rate as beats per minute (bpm). 
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/sensors/heartratemonitor/read</dt>
+<dd><div class="description">
+          <p>
+Identifies a heart rate monitor sensor type limited to read access only, 
+i.e. access to configureSensor is not supported. <br>The sensorValues attribute of SensorEvent has the same definition as for 
+http://picosec.org/api/sensors/heartratemonitor.
+          </p>
+         </div></dd>
+</dl>
+</div>
+<h2 class="section" id="full-webidl">Full WebIDL</h2>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">    interface Sensor : <a href="servicediscovery.html#::Service">Service</a> {
+ 
+
+        readonly attribute float?          maximumRange;
+
+
+        readonly attribute unsigned long?   minDelay;
+
+
+        readonly attribute float?         power;
+
+
+        readonly attribute float?         resolution;
+
+
+        readonly attribute DOMString?      vendor;  
+
+
+        readonly attribute unsigned long?  version; 
+
+
+        <a href="#::PendingSensorConfigOp">PendingSensorConfigOp</a> configureSensor (<a href="#::ConfigureSensorOptions">ConfigureSensorOptions</a> options, VoidFunction successCB, optional <a href="#::SensorErrorCB">SensorErrorCB</a> errorCB);
+     };
+
+
+
+    callback SensorErrorCB = void (DOMError error);
+
+
+    enum EventFireMode { "fixedinterval", "valuechange"};
+
+
+    dictionary ConfigureSensorOptions {
+
+
+
+       unsigned short timeout;
+
+
+       unsigned long? rate;
+       
+
+       EventFireMode? eventFireMode;
+
+
+       <a href="#::GeoPosition">GeoPosition</a>? position;
+
+
+       DOMString? config;
+        };
+
+
+    dictionary GeoPosition {
+
+
+       unsigned long latitude;
+
+
+       unsigned long longitude;
+     };
+
+
+     interface PendingSensorConfigOp {
+
+
+        void cancel ();
+     };
+
+
+
+   enum Accuracy { "high", "medium", "low", "unreliable", "unavailable"};
+
+
+
+
+   interface SensorEvent : <a href="http://www.w3.org/TR/DOM-Level-3-Events/#events-Event">Event</a> {
+
+
+    readonly attribute DOMString sensorType;
+
+
+    readonly attribute DOMString sensorId;
+
+
+
+    readonly attribute Accuracy accuracy;
+
+ 
+
+    readonly attribute unsigned long rate;
+
+
+    readonly attribute EventFireMode eventFireMode;
+
+
+    readonly attribute any sensorValues;
+
+
+     readonly attribute <a href="#::GeoPosition">GeoPosition</a>?  position;
+
+
+
+    void initSensorEvent(DOMString type,
+                         boolean bubbles,
+                         boolean cancelable,
+                         DOMString sensorType,
+                         DOMString sensorId,
+                         Accuracy accuracy,
+                         unsigned long rate,
+                         EventFireMode eventFireMode, 
+                         any sensorValues,
+                         <a href="#::GeoPosition">GeoPosition</a> position);
+    };</pre>
+</div>
+</div>
+</body>
+</html>

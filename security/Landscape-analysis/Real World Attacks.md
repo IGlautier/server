@@ -4,39 +4,39 @@ Classsification and analysis of documented IoT attacks
 
 ## - Attacks in the news
 
-### 1. 'Wake up baby': Man hacks into 10-month-old's baby monitor to watch sleeping infant/ Hack turns Belkin baby monitor into iPhone-controlled bugging device
+### 1. Hack turns Belkin baby monitor into iPhone-controlled bugging device
 
 **Domain:** Home
 
 **Description:** A vulnerable wireless camera of a baby monitor was hacked enabling the attacker to monitor people in the room.
 
 **Vulnerabilities:**
-* One-time access is the sole determinant for authenticating a device <br>
+
+1. One-time access is the sole determinant for authenticating a device <br>
 - After initial connection of the WeMo baby monitor to a home Wi-Fi network, and access from an iPhone/iPad app over the same network, the iPhone has unfettered access to all audio picked up by the monitor. Access to the home Wi-Fi network isn't necessary for the app to work after initial setup; all conversations within earshot of the monitor can be tapped as long as the iPhone or iPad has an Internet connection. This gives an attacker remote access to the monitor even halfway across the world. All an attacker has to do is get access to the home Wi-Fi network just once.
-* Lack of password authentication for accessing the monitor.
-* The devices operate on the premise that they're not running in an environment where even one connected device is compromised. This essentially means that the security of a WeMo monitor depends on securing the home Wi-Fi network password.
-* The same mechanism that authorizes an iPhone that connects to a WeMo even once can be abused by malware to give virtually any Internet-connected device remote bugging capabilities.
+2. Lack of password authentication for accessing the monitor.
+3. The devices operate on the premise that they're not running in an environment where even one connected device is compromised. This essentially means that the security of a WeMo monitor depends on securing the home Wi-Fi network password.
+4. The same mechanism that authorizes an iPhone that connects to a WeMo even once can be abused by malware to give virtually any Internet-connected device remote bugging capabilities.
 <br> - It was found that it is trivial for any computer that is already infected to obtain the credentials to tap the audio feed of a WeMo baby monitor connected to the same home network.
-* A weakness in another Belkin product, the Belkin Wi-Fi NetCam, was also found. While the NetCam requires a password to access video feeds, even by users on the same Wi-Fi network, the password is transmitted in plaintext to a server at the IP address 66.160.133.67. This once again makes it trivial for machines already infected with malware to retrieve the password and tap in to the video feed.
+5. A weakness in another Belkin product, the Belkin Wi-Fi NetCam, was also found. While the NetCam requires a password to access video feeds, even by users on the same Wi-Fi network, the password is transmitted in plaintext to a server at the IP address 66.160.133.67. This once again makes it trivial for machines already infected with malware to retrieve the password and tap in to the video feed.
 
 **Implications for MXD:**
 
-* Need for securing the mobile device the baby monitor connects to.
-* Securing the network perimeter.
-* Need for regular firmware updates.
-* Implications of using default passwords.
-* Intrusion of privacy and threats to personal safety.
-* Possible entry point into network for spread of malware, launch of further attack.
+1. Need for securing the mobile device the baby monitor connects to.
+2. Securing the network perimeter.
+3. Need for regular firmware updates.
+4. Implications of using default passwords.
+5. Intrusion of privacy and threats to personal safety.
+6. Possible entry point into network for spread of malware, launch of further attack.
 
 **Mitigations:**
 
-* The perimeter strategy to security is ineffective. The endpoint devices must strive to protect their own stack rather than rely on their network segment being completely trustworthy.
-* A smartphone or any other devce connecting to the home network should be authenticated upon each access.
-* All devices on the home network should be password protected.
-* Ensure adequate encryption of credential data in storage and transit.
+1. The perimeter strategy to security is ineffective. The endpoint devices must strive to protect their own stack rather than rely on their network segment being completely trustworthy.
+2. A smartphone or any other devce connecting to the home network should be authenticated upon each access.
+3. All devices on the home network should be password protected.
+4. Ensure adequate encryption of credential data in storage and transit.
 
-**Source:** http://www.mirror.co.uk/news/world-news/man-hacks-10-month-olds-baby-monitor-3468827
-http://arstechnica.com/security/2013/10/hack-turns-belkin-baby-monitor-into-iphone-controlled-bugging-device/
+**Source:** http://arstechnica.com/security/2013/10/hack-turns-belkin-baby-monitor-into-iphone-controlled-bugging-device/
 
 ### 2. Belkin WeMo smart home networks in danger of hacks
 
@@ -47,60 +47,66 @@ http://arstechnica.com/security/2013/10/hack-turns-belkin-baby-monitor-into-ipho
 
 **Vulnerabilities:**
 
-* Not enough encryption controls built in.
-* Vulnerability that allows hackers to impersonate Belkin's encryption keys and cloud services to push malicious firmware updates and capture credentials at the same time.
-* No password set on telnet with root access
-*	Private undocumented web interface
-*	Public hard coded username and password
+1. Not enough encryption controls built in.
+2. Weakness that allows hackers to impersonate Belkin's encryption keys and cloud services to push malicious firmware updates and capture credentials at the same time.
+3. No password set on telnet with root access.
+4.	Private undocumented web interface.
+5.	Public hard coded username and password.
 
 **Fixed vulnerabilities:**
-* WeMo API server updated to prevent an XML injection attack from gaining access to other WeMo devices
-* WeMo firmware updated with added SSL encryption 
-* Elimination of storage of the signing key on the device
-* Serial port interface password protected to prevent a malicious firmware attack.
+
+1. WeMo API server updated to prevent an XML injection attack from gaining access to other WeMo devices
+2. WeMo firmware updated with added SSL encryption 
+3. Elimination of storage of the signing key on the device
+4. Serial port interface password protected to prevent a malicious firmware attack.
 
 **Implications for MXD:**
 
-* Ease of monitoring and conrolling home networks.
-* Malicious firmware updates can be used to gain access to other devices, like laptops and smartphones.
-* Motion sensors used by WeMo devices  can be used by an attacker to remotely monitor occupancy within the home.
-* Belkin's WeMo home automation products let users build their own smart home solutions by adding Internet connectivity to any device leading to an increased possibility of attack.
+1. Ease of monitoring and conrolling home networks.
+2. Malicious firmware updates can be used to gain access to other devices, like laptops and smartphones.
+3. Motion sensors used by WeMo devices  can be used by an attacker to remotely monitor occupancy within the home.
+4. Belkin's WeMo home automation products let users build their own smart home solutions by adding Internet connectivity to any device leading to an increased possibility of attack.
 
 **Mitigations:**
 
-* Proper configuration
-* Proper crypto implementation (most hacks attack the implementation of the crypto algorithm)
-* Eliminate storage of keys on device
-* No password set on telnet with root access
-*	Password protect the home Wi-Fi network
-*	Avoid using default username and password
+1. Proper configuration
+2. Proper crypto implementation (most hacks attack the implementation of the crypto algorithm)
+3. Eliminate storage of keys on device
+4. No password set on telnet with root access
+5.	Password protect the home Wi-Fi network
+6.	Avoid using default username and password
 
-**Source:** http://www.cnet.com/uk/news/belkin-wemo-smart-home-networks-in-danger-of-hacks/
-<br> http://disconnected.io/2014/04/04/universal-plug-and-fuzz/
-<br> http://disconnected.io/2014/04/16/new-belkin-wemo-module/
+**Source:** 
+
+1. http://www.cnet.com/uk/news/belkin-wemo-smart-home-networks-in-danger-of-hacks/
+2. http://disconnected.io/2014/04/04/universal-plug-and-fuzz/
+3. http://disconnected.io/2014/04/16/new-belkin-wemo-module/
 
 ### 3. Hacker will expose potential security flaw in 4 million hotel room keycard locks
 
 **Domain:** Home
 
 **Description:** Vulnerabilities discovered in hotel room locks from the manufacturer Onity indicate that with a few hacker tricks and a handful of cheap hardware, the DC power port under the keycard lock might offer access to your room just as completely as your keycard.
-<br>Using an open-source hardware gadget built for less than $50, an attacker can insert a plug into the DC port, bypass the card reader, and open the Onity door lock in a matter of seconds.
+
+Using an open-source hardware gadget built for less than $50, an attacker can insert a plug into the DC port, bypass the card reader, and open the Onity door lock in a matter of seconds.
+
 The exploit works by spoofing a portable programming device that controls a facility’s locks and sets which master keys open which doors. The portable programmer, which plugs into the DC port under the locks, can also open any door, even providing power through that port to trigger the mechanism of a door lock in which the battery has run out.
 
 **Vulnerabilities:**
 
-* The system’s vulnerability arises from the fact that every lock’s memory is entirely exposed to whatever device attempts to read it through that port. 
-* The cryptographic key that’s required to trigger the door lock’s open mechanism is also stored in the lock’s memory, accessible by the spoofed portable device.
-* Use of a weak encryption scheme that allows an attacker to derive the “site code”–a unique numerical key for every facility–from two cards encoded one after another for the same room. By reading the encrypted data off of two cards and testing thousands of potential site codes against both cards until the decoded data displays a predictable interval between the two, an attacker can find the site code and use it to create more card keys with a magnetizing device. But given that he can only create more cards for the same room as the two keys he’s been issued, that security flaw represents a fairly low risk compared with the ability to open any door arbitrarily.
+1. The system’s vulnerability arises from the fact that every lock’s memory is entirely exposed to whatever device attempts to read it through that port. 
+2. The cryptographic key that’s required to trigger the door lock’s open mechanism is also stored in the lock’s memory, accessible by the spoofed portable device.
+3. Use of a weak encryption scheme that allows an attacker to derive the “site code”–a unique numerical key for every facility–from two cards encoded one after another for the same room. 
+<br> By reading the encrypted data off of two cards and testing thousands of potential site codes against both cards until the decoded data displays a predictable interval between the two, an attacker can find the site code and use it to create more card keys with a magnetizing device. But given that he can only create more cards for the same room as the two keys he’s been issued, that security flaw represents a fairly low risk compared with the ability to open any door arbitrarily.
 
 **Implications for MXD:**
 
-* Intrusion of privacy and threats to personal safety.
+1. Intrusion of privacy and threats to personal safety.
 
 **Mitigations:**
 
-* Protection of lock memory and cryptographic keys storeed therein.
-* Use of adequately secure encryption schemes.
+1. Protection of lock memory and cryptographic keys storeed therein.
+2. Use of adequately secure encryption schemes.
 
 **Source:** http://www.forbes.com/sites/andygreenberg/2012/07/23/hacker-will-expose-potential-security-flaw-in-more-than-four-million-hotel-room-keycard-locks/
 
@@ -132,9 +138,9 @@ An analysis identified that an AES implementation was being used. Which meant th
 
 **Vulnerabilities:**
 
-* The protocol, in most part, was unencrypted, allowing for easy dissection and analysis of the protocol and subsequent packet injection into the network traffic.
-* Packets could be injected into the mesh network to request the WiFi details without the master bulb first beaconing for new bulbs. Further to this, requesting just the WiFi details did not add any new devices or raise any alerts within the LIFX smart phone application.
-* Armed with knowledge of the encryption algorithm, key, initialization vector and an understanding of the mesh network protocol an attacker could inject packets into the mesh network, capture the WiFi details and decrypt the credentials, all without any prior authentication or alerting of presence. 
+1. The protocol, in most part, was unencrypted, allowing for easy dissection and analysis of the protocol and subsequent packet injection into the network traffic.
+2. Packets could be injected into the mesh network to request the WiFi details without the master bulb first beaconing for new bulbs. Further to this, requesting just the WiFi details did not add any new devices or raise any alerts within the LIFX smart phone application.
+3. Armed with knowledge of the encryption algorithm, key, initialization vector and an understanding of the mesh network protocol an attacker could inject packets into the mesh network, capture the WiFi details and decrypt the credentials, all without any prior authentication or alerting of presence. 
 
 **Patched Vulnerabilities**
 
@@ -142,19 +148,22 @@ The fix, which is included in the new firmware encrypts all 6LoWPAN traffic, usi
 
 **Implications for MXD:**
 
-* Obtaining WiFi details by packet injection without prior authentication.
-* Possible entry point into network for spread of malware, launch of further attack.
-* Ability to cause chaos(blackouts)
+1. Obtaining WiFi details by packet injection without prior authentication.
+2. Possible entry point into network for spread of malware, launch of further attack.
+3. Ability to cause chaos(blackouts).
 
 > It should be noted, since this attack works on the 802.15.4 6LoWPAN wireless mesh network, an attacker would need to be within wireless range, ~30 meters, of a vulnerable LIFX bulb to perform this attack, severely limiting the practicality for exploitation on a large scale.
+<br> Source: http://arstechnica.com/security/2014/07/crypto-weakness-in-smart-led-lightbulbs-exposes-wi-fi-passwords/
 
 **Mitigations:**
 
-* Provision to prevent packet injection into the mesh network to request the WiFi details, without the master bulb first beaconing for new bulbs. 
-* Adequate encryption of the 6LoWPAN traffic.
+1. Provision to prevent packet injection into the mesh network to request the WiFi details, without the master bulb first beaconing for new bulbs. 
+2. Adequate encryption of the 6LoWPAN traffic.
 
-**Source:** http://www.contextis.co.uk/blog/hacking-internet-connected-light-bulbs/
-<br> http://arstechnica.com/security/2014/07/crypto-weakness-in-smart-led-lightbulbs-exposes-wi-fi-passwords/
+**Source:** 
+
+1. http://www.contextis.co.uk/blog/hacking-internet-connected-light-bulbs/
+2. http://arstechnica.com/security/2014/07/crypto-weakness-in-smart-led-lightbulbs-exposes-wi-fi-passwords/
 
 ### 5.Of course hackers made your smart fridge and TV send malicious emails
 
@@ -168,17 +177,17 @@ The botnet, which included Smart TVs and smart fridges, delivered more than 750,
 
 **Vulnerabilities:**
 
-* Misconfiguration and the use of default passwords left the devices completely exposed on public networks, available for takeover and use.
-* These devices are typically not protected by the anti-spam and anti-virus infrastructures.
+1. Misconfiguration and the use of default passwords left the devices completely exposed on public networks, available for takeover and use.
+2. These devices are typically not protected by the anti-spam and anti-virus infrastructures.
 
 **Implications for MXD:**
 
-* Use of devices in the home as bots in delivering a larger cyber attack
+1. Use of devices in the home as bots in delivering a larger cyber attack
 
 **Mitigations:**
 
-* Proper device configuration and use of strong passwords
-* Possibility of built in anti-virus?
+1. Proper device configuration and use of strong passwords
+2. Possibility of built-in anti-virus?
 
 **Source:** http://bgr.com/2014/01/20/smart-tvs-fridge-hacked/
 
@@ -190,26 +199,29 @@ The botnet, which included Smart TVs and smart fridges, delivered more than 750,
 
 **Vulnerabilities:**
 
-* Vulnerabilities in the CAN bus, the heart of the car that communicates with everything from the windshield wipers to the engine.
-* Lack of adequate authentication.
-* The computer code in cars is outdated. It's similar to the on/off switches used in industrial controls. It's easily manipulated.
-* Internet connectivity means that physical access will not be needed to hijack control of a car.
+1. Vulnerabilities in the CAN bus, the heart of the car that communicates with everything from the windshield wipers to the engine.
+2. Lack of adequate authentication.
+3. The computer code in cars is outdated. It's similar to the on/off switches used in industrial controls. It's easily manipulated.
+4. Internet connectivity means that physical access will not be needed to hijack control of a car.
 
 > Car software is not built to the same standards as, say, a bank application. Or software coming out of Microsoft.
+<br> Source: https://sohommajumder.wordpress.com/tag/car-hacking/
 
 **Implications for MXD:**
 
-* Ease of bypassing encryption and obtaining control of the car’s Controller Area Network
-* Physical security implications of an attacker being able to disable the brakes, lock the car doors and disable the alarm.
-* Bluetooth bugs in the system which can be exploited to send remote code executions from a mobile device. 
+1. Ease of bypassing encryption and obtaining control of the car’s Controller Area Network
+2. Physical security implications of an attacker being able to disable the brakes, lock the car doors and disable the alarm.
+3. Bluetooth bugs in the system which can be exploited to send remote code executions from a mobile device. 
 
 **Mitigations:**
 
-* Built-in firewalls to prevent malicious tampering.
-* Adequate authentication.
+1. Built-in firewalls to prevent malicious tampering.
+2. Adequate authentication.
 
-**Source:** http://www.dailymail.co.uk/sciencetech/article-2553026/The-gadget-hack-CAR-Terrifying-12-tool-remotely-control-headlights-locks-steering-brakes.html
-<br> http://money.cnn.com/2014/06/01/technology/security/car-hack/
+**Source:** 
+
+1. http://www.dailymail.co.uk/sciencetech/article-2553026/The-gadget-hack-CAR-Terrifying-12-tool-remotely-control-headlights-locks-steering-brakes.html
+2. http://money.cnn.com/2014/06/01/technology/security/car-hack/
 
 ### 7. When ‘Smart Homes’ get hacked: I Haunted a complete stranger’s house via the internet
 
@@ -219,26 +231,26 @@ The botnet, which included Smart TVs and smart fridges, delivered more than 750,
 
 **Vulnerabilities:**
 
-* Ability to see all of the devices in a home and control them.
+1. Ability to see all of the devices in a home and control them.
 <br> - These systems are crawl-able by search engines.
-* Lack of authentication( usernames and passwords not required by default)
+2. Lack of authentication (usernames and passwords not required by default).
 <br> - No authentication between the handheld and any of the control commands.
 <br> - No authentication once access to Wi-Fi network has been gained.
-* Revelation of sensitive information- time zone (along with the closest major city to their home), IP addresses and even the name of a child. 
-* Lack of authentication meant that anyone who figured out the IP address for vulnerable systems could get access to and control of people’s homes.
-* Storage of device configuration in the cloud.
+3. Revelation of sensitive information- time zone (along with the closest major city to their home), IP addresses and even the name of a child. 
+4. Lack of authentication meant that anyone who figured out the IP address for vulnerable systems could get access to and control of people’s homes.
+5. Storage of device configuration in the cloud.
 
 **Implications for MXD:**
 
-* Ease of disabling alerts and creating fake alerts
-* Physical security implications- burglary target
-* Ability to turn attacked homes into haunted houses, energy-consumption nightmares, or even robbery targets. Opening a garage door could make a house ripe for actual physical intrusion.
-* Enough information to link the homes on the Internet to their locations in the real world.
+1. Ease of disabling alerts and creating fake alerts.
+2. Physical security implications- burglary target.
+3. Ability to turn attacked homes into haunted houses, energy-consumption nightmares, or even robbery targets. Opening a garage door could make a house ripe for actual physical intrusion.
+4. Enough information to link the homes on the Internet to their locations in the real world.
 
 **Mitigations:**
 
-* Requirement for password protection by default.
-* Secure storage of device configuration in the cloud.
+1. Requirement for password protection by default.
+2. Secure storage of device configuration in the cloud.
 
 **Source:** http://www.forbes.com/sites/kashmirhill/2013/07/26/smart-homes-hack/
 
@@ -249,6 +261,7 @@ The botnet, which included Smart TVs and smart fridges, delivered more than 750,
 **Description:** A team of scientists claim that hybrid smart TVs that blur the line between televisions and the internet are vulnerable to a simple hack. Smart TVs can be hacked using a cheap antenna and broadcast messages. The attck relies on an insecurity in the Hybrid Broadcast-Broadband Television Standard (HbbTV).
 
 HbbTV allows the addition of interactive HTML content to DVB cable, satellite or terrestrial signals. This means that viewers can use their favourite web services via TV apps, and allows advertisers to serve up relevant ads.
+
 The standard is vulnerable to an exploitation technique called the “Red Button attack”-- named after the red button used on modern smart TV remotes to access additional content -- that allows a hacker to intercept the sound, picture and accompanying data sent by the broadcaster using the data packets, and then takeover apps on the TV or even launch attacks across the Internet.  On Facebook, for example, the hacker could log in and post messages to the social network on the person's behalf. 
 
 **The Exploit**
@@ -262,33 +275,37 @@ This could range from getting access to their Facebook accounts to writing fake 
 
 **Vulnerabilities:**
 
-* While the impact of many of these attacks is exacerbated by poor implementation choices, for most attacks the core of the problem lies with the overall architecture, as defined in the specification itself.
+1. While the impact of many of these attacks is exacerbated by poor implementation choices, for most attacks the core of the problem lies with the overall architecture, as defined in the specification itself.
 <br> This particular attack relies on an insecurity in the HbbTV standard.
-* This weakness could allow such attacks as man-in-the-middle, watering holes or the ability to change what users watch on TVs.
-* HbbTVs broadcasts can be hijacked because they are not linked to a web server, which also makes attacks virtually untraceable.
+2. This weakness could allow such attacks as man-in-the-middle, watering holes or the ability to change what users watch on TVs.
+3. HbbTVs broadcasts can be hijacked because they are not linked to a web server, which also makes attacks virtually untraceable.
 
 **Implications for MXD:**
 
-* MiTM attack, with hackers placing themselves between the consumer and the broadcaster and injecting their own information into the broadcast stream.
-* The attack does not require either an internet address or a server.
-* Attackers can use this insecure medium to get access to the target's internet accounts.
+1. MiTM attack, with hackers placing themselves between the consumer and the broadcaster and injecting their own information into the broadcast stream.
+2. The attack does not require either an internet address or a server.
+3. Attackers can use this insecure medium to get access to the target's internet accounts.
 <br> - Someone using a smart TV could find their various internet accounts sending spam, printing coupons and writing fake reviews without their knowledge. 
 Hackers could, in theory, also use these accounts to harvest personal information.
-* This enables a large-scale exploitation technique with a localised geographical footprint based on radio frequency (RF) injection.
+4. This enables a large-scale exploitation technique with a localised geographical footprint based on radio frequency (RF) injection.
 
 > This ‘requires a minimal budget and infrastructure and is remarkably difficult to detect.’
 ‘In a dense urban area, an attacker with a budget of about $450 (£270) can target more than 20,000 devices in a single attack.’
+<br> Source: http://www.dailymail.co.uk/sciencetech/article-2652734/Is-smart-TV-risk-attack-Hackers-exploit-flaw-red-button-feature-hijack-web-accounts-steal-information.html
 
-> “After hacking the radio signal, hackers ‘become the broadcaster' and even have the ability to hack into anything sent or received by the consumer. One problem with such an attack is that, since it would involve hacking into the radio signal through the use of an antenna, it would be difficult to track down the attackers. It's reminiscent of someone sniffing the traffic on a public Wi-Fi hotspot or setting up a fake one.”
+> After hacking the radio signal, hackers ‘become the broadcaster' and even have the ability to hack into anything sent or received by the consumer. One problem with such an attack is that, since it would involve hacking into the radio signal through the use of an antenna, it would be difficult to track down the attackers.
+<br> Source: http://www.scmagazineuk.com/alarm-bells-ring-for-internet-of-things-after-smart-tv-hack/article/354900/
 
 **Mitigations:**
 
-* There are a number of possible solutions. The most drastic includes cutting all internet access to smart TVs.
-* Alternatively, broadcasters could begin to integrate smart TVs into a network that could see if they are being hijacked by monitoring for high spikes in signal strength.
-* The most simple solution, though, would be to have a confirmation box pop-up on screen when a viewer’s smart TV is trying to open an app such as Facebook.
+1. There are a number of possible solutions. The most drastic includes cutting all internet access to smart TVs.
+2. Alternatively, broadcasters could begin to integrate smart TVs into a network that could see if they are being hijacked by monitoring for high spikes in signal strength.
+3. The most simple solution, though, would be to have a confirmation box pop-up on screen when a viewer’s smart TV is trying to open an app such as Facebook.
 
-**Source:** http://www.scmagazineuk.com/alarm-bells-ring-for-internet-of-things-after-smart-tv-hack/article/354900/
-<br> http://www.dailymail.co.uk/sciencetech/article-2652734/Is-smart-TV-risk-attack-Hackers-exploit-flaw-red-button-feature-hijack-web-accounts-steal-information.html
+**Source:** 
+
+1. http://www.scmagazineuk.com/alarm-bells-ring-for-internet-of-things-after-smart-tv-hack/article/354900/
+2. http://www.dailymail.co.uk/sciencetech/article-2652734/Is-smart-TV-risk-attack-Hackers-exploit-flaw-red-button-feature-hijack-web-accounts-steal-information.html
 
 ### 9. Hacking Traffic Systems for fun and chaos
 
@@ -297,7 +314,7 @@ Hackers could, in theory, also use these accounts to harvest personal informatio
 **Description:** Traffic control systems are vulnerable to a number of attacks and can be exploited quite easily from up to a mile or 2 away and perhaps could be used to spread malware from device to device. <br>
 It’s also possible to cause electronic signs to display incorrect speed limits and instructions and to make ramp meters allow cars on the freeway faster or slower than needed. The attack was carried out by intercepting the signal between sensors in the pavement and the traffic control centre.
 
-**The exploit**
+**The exploit:**
 
 The hacker mounted a Sensys Networks wireless transmitter to a drone, and found he could intercept data being fed to traffic control systems from 50 metres away.
 He then attached an antenna to the USB-drive-sized transmitter and found he could be 500 metres from a light and still intercept the data.
@@ -305,25 +322,25 @@ He then attached an antenna to the USB-drive-sized transmitter and found he coul
 The issue was found in devices that communicate with traffic control systems, not the actual systems controlling traffic lights themselves.
 
 **Vulnerabilities:**
-
-* Unencrypted communications between devices that communicate with traffic control systems and the traffic control system itself.
-* Lack of authentication to access these devices(sensors on pavements).
-* Self-replicating malware can be used to infect the vulnerable controllers and spread device to device. The compromised systems can be used to launch attacks against traffic control systems at a later date.
+1. Unencrypted communications between devices that communicate with traffic control systems and the traffic control system itself.
+2. Lack of authentication to access these devices(sensors on pavements).
+3. Self-replicating malware can be used to infect the vulnerable controllers and spread device to device. The compromised systems can be used to launch attacks against traffic control systems at a later date.
 
 > It might be possible to create self-replicating malware (worm) that can infect these vulnerable devices in order to launch attacks affecting traffic control systems later. The exploited device could then be used to compromise all of the same devices nearby.
+<br> Source: http://blog.ioactive.com/2014/04/hacking-us-and-uk-australia-france-etc.html
 
 **Implications for MXD:**
 
-* Compromising a traffic control system and injecting data in the system. 
-* Ability to control and manipulate traffic lights, electronic signs on highways has dangerous implications on personal road safety.
-* An attacker could cause road chaos by launching an attack with a simple exploit programmed on cheap hardware ($100 or less). The attack could even be launched from a drone flying overhead.
+1. Ease of compromising a traffic control system and injecting data in the system. 
+2. Ability to control and manipulate traffic lights, electronic signs on highways has dangerous implications on personal road safety.
+3. An attacker could cause road chaos by launching an attack with a simple exploit programmed on cheap hardware ($100 or less). The attack could even be launched from a drone flying overhead.
 <br>- An attacker could potentially trick the system into changing lights or stalling on red lights.
-* These traffic problems could cause real issues, even deadly ones, by causing accidents or blocking ambulances, fire fighters, or police cars going to an emergency call.
-* Since the devices don't require authentication, attackers can conceivably alter the firmware to make them unable to communicate with the rest of the system.
+4. These traffic problems could cause real issues, even deadly ones, by causing accidents or blocking ambulances, fire fighters, or police cars going to an emergency call.
+5. Since the devices don't require authentication, attackers can conceivably alter the firmware to make them unable to communicate with the rest of the system.
 
 **Mitigations:**
 
-* Manual overrides and secondary controls could be used if anomalies are detected.
+1. Manual overrides and secondary controls could be used if anomalies are detected.
 
 **Source:** http://threatpost.com/hacking-traffic-systems-for-fun-and-chaos
 
@@ -337,10 +354,10 @@ The highly connected Hue can be attacked through multiple vectors, including lin
 
 **Vulnerabilities:**
 
-* Hue lighting system was intentionally designed to grant access to any device connected to a user's home network.
-<br> - Company designers went about doing this by using security tokens that are generated without requiring a user to press a special authentication button on the wireless bridge of the system.
+1. The Hue, by design, is based on open APIs and the trust of local devices. 
+<br> Hue lighting system was intentionally designed to grant access to any device connected to a user's home network. Company designers went about doing this by using security tokens that are generated without requiring a user to press a special authentication button on the wireless bridge of the system.
 
-* The Philips wireless controller uses a weak authentication system to receive commands from trusted smartphones and computers. It consists of a security token containing the device's unique media access control identifier that has been cryptographically hashed using the MD5 hash algorithm. These hardware addresses are trivial to detect by anyone on the same network or often by people within radio range of a device, making them unsuitable for authentication. 
+2. The Philips wireless controller uses a weak authentication system to receive commands from trusted smartphones and computers. <br>It consists of a security token containing the device's unique media access control identifier that has been cryptographically hashed using the MD5 hash algorithm. These hardware addresses are trivial to detect by anyone on the same network or often by people within radio range of a device, making them unsuitable for authentication. 
 
 
 **Exploit**
@@ -349,39 +366,56 @@ The exploit is in the form of Java code that can be delivered when browsing comp
 
 **Implications for MXD:**
 
-* Creation of a localised blackout <br>-the ability of an intruder to remotely shut off lighting in locations such as hospitals and other public venues can result in serious consequences. 
+1. Creation of a localised blackout <br>-the ability of an intruder to remotely shut off lighting in locations such as hospitals and other public venues can result in serious consequences. 
 <br>- The vulnerability can be exploited to create a blackout that lasts as long as the lights are connected to the wireless control bridge. Even disabling the smartphone or computer the exploit abuses to take control of the system may not be enough to turn the lights back on if there are other devices on the network that have already been authenticated.
-
 
 **Mitigations:**
 
+1. Authentication each time a device connects to a local home network
+2. Adequate authentication of devices 
 
-**Source:** http://www.extremetech.com/electronics/163972-philips-hue-led-smart-lights-hacked-whole-homes-blacked-out-by-security-researcher
-<br> http://arstechnica.com/security/2013/08/philips-hue-lights-malware-hack/
+**Source:** 
+
+1. http://www.extremetech.com/electronics/163972-philips-hue-led-smart-lights-hacked-whole-homes-blacked-out-by-security-researcher
+2. http://arstechnica.com/security/2013/08/philips-hue-lights-malware-hack/
 
 ### 11. It’s Insanely Easy to Hack Hospital Equipment
 
 **Domain:** Health
 
-**Description:** Drug infusion pumps that can be remotely manipulated to change the dosage doled out to patients; Bluetooth-enabled defibrillators that can be manipulated to deliver random shocks to a patient’s heart or prevent a medically needed shock from occurring; X-rays that can be accessed by outsiders lurking on a hospital’s network; temperature settings on refrigerators storing blood and drugs that can be reset, causing spoilage; and digital medical records that can be altered to cause physicians to misdiagnose, prescribe the wrong drugs or administer unwarranted care. These are just some of the things that could go wrong if a hospital is hacked into. <br> Attackers could also blue-screen devices and restart or reboot them to wipe out the configuration settings, allowing an attacker to take critical equipment down during emergencies or crash all of the testing equipment in a lab and reset the configuration to factory settings.<br> Storage systems for X-rays and other images were equally vulnerable. These are generally backed up in centralized storage units that require no authentication to access. 
+**Description:** Drug infusion pumps that can be remotely manipulated to change the dosage doled out to patients; Bluetooth-enabled defibrillators that can be manipulated to deliver random shocks to a patient’s heart or prevent a medically needed shock from occurring; X-rays that can be accessed by outsiders lurking on a hospital’s network; temperature settings on refrigerators storing blood and drugs that can be reset, causing spoilage; and digital medical records that can be altered to cause physicians to misdiagnose, prescribe the wrong drugs or administer unwarranted care. These are just some of the things that could go wrong if a hospital is hacked into. 
+
+Attackers could also blue-screen devices and restart or reboot them to wipe out the configuration settings, allowing an attacker to take critical equipment down during emergencies or crash all of the testing equipment in a lab and reset the configuration to factory settings. Storage systems for X-rays and other images were equally vulnerable. These are generally backed up in centralized storage units that require no authentication to access. 
 
 **Vulnerabilities:**
 
+1. Lack of authentication to access or manipulate the equipment.
+2. Use of weak passwords or default and hardcoded vendor passwords.
+3. Use of embedded web servers and administrative interfaces that make it easy to identify and manipulate devices once an attacker finds them on a network.
+4. Inadequate/lack of proper air gapping of medical systems and devices.
+5. Unauthenticated or unencrypted communication between the devices, leading to threat of misdiagnosis or wrong prescription.
+6. Medical record backups are completely unprotected and there is no logging if you go in the backdoor way and grab those images.
+7. An off-the-shelf vulnerability scanner against the software firewall of a surgery robot caused it to turn off.
 
 **Implications for MXD:**
 
-* Lack of authentication to access or manipulate the equipment
-* Use of weak passwords or default and hardcoded vendor passwords
-* Use of embedded web servers and administrative interfaces that make it easy to identify and manipulate devices once an attacker finds them on a network.
-* Inadequate/lack of air gapping devices
-* Unauthenticated or unencrypted communication between the devices, leading to threat of misdiagnosis or wrong prescription.
-* Hackers could gain access to the devices by infecting an employee’s computer via a phishing attack, then exploring the internal network to find vulnerable systems.
-* A hacker who happens to be in the hospital could also simply plug his laptop into the network to discover and attack vulnerable systems.
-* Once in the system, an attacker can turn off the email pager notification features or alter the settings to change when an alert is sent.
-* Replay attacks of data passing from medical devices to patient records
+1. There are very few devices that are truly firewalled off from the rest of the organization. With initial entry into the network, one can scan and find almost all of the devices on the internal network. <br>Hackers could gain access to the devices by infecting an employee’s computer via a phishing attack, then exploring the internal network to find vulnerable systems. 
+2. A hacker who happens to be in the hospital could also simply plug his laptop into the network to discover and attack vulnerable systems.
+3. Once in the system, an attacker can turn off the email pager notification features or alter the settings to change when an alert is sent.
+4. Replay attacks of data passing from medical devices to patient records.
+5. Embedded web services that allow devices to communicate with one another and feed digital data directly to patient medical records can have a serious impact on patient health.
+6. Ease of turning off medical pager notification features or alter the settings to change when an alert is sent.
+7. Disclosure of sensitive medical data/patient records.
 
 **Mitigations:**
 
+1. Proper configuration of firewalls and perimeter defense systems
+2. Use of strong passwords
+3. Air gapping of medical systems and devices.
+4. Secure authentication of devices connecting to the network 
+5. Authentication of a device each time it connects to the network
+6. Adequate encryption of network traffic
+7. Backup and secure storage of medical record data 
 
 **Source:** http://www.wired.com/2014/04/hospital-equipment-vulnerable/
 
@@ -389,18 +423,23 @@ The exploit is in the form of Java code that can be delivered when browsing comp
 
 **Domain:** Energy
 
-**Description:** The communication networks and software that link green energy sources to the grid as well as the electronic meters that send real time power usage to consumers and utilities are providing new back-door entry paths for computer hackers to raise havoc with the grid. <br>  Every meter being deployed in the U.K. has a “relay” that can disconnect a household from the power supply. This is controlled by the utility from a computer keyboard. Since the same code goes into all meters, it would take just one small piece of code inserted by a rogue programmer to disconnect the power from millions of meters and disable the remote connection to the utility. <br> The “Dragonfly” hackers used a French website of a clean power provider as a “watering hole,” where victims from the targeted company visit and pick up infected code. They were able to compromise industrial control systems and install malware that can replicate itself and spread to other computers.
+**Description:** The communication networks and software that link green energy sources to the grid as well as the electronic meters that send real time power usage to consumers and utilities are providing new back-door entry paths for computer hackers to raise havoc with the grid. 
 
 **Vulnerabilities:**
 
+1. A multitude of energy inputs is forcing grid managers to run systems that communicate real-time data on power flows to consumers and power plants, bringing networks that were previously closely controlled into contact with computer and telecommunication systems used by millions.
+2. Every meter being deployed in the U.K. has a “relay” that can disconnect a household from the power supply. This is controlled by the utility from a computer keyboard. Since the same code goes into all meters, it would take just one small piece of code inserted by a rogue programmer to disconnect the power from millions of meters and disable the remote connection to the utility. 
+3. Watering hole attack, where victims from the targeted company visit and pick up infected code. They were able to compromise industrial control systems and install malware that can replicate itself and spread to other computers.
 
 **Implications for MXD:**
 
-* Ability to manipulate or disconnect the power from millions of meters and disable the remote connection to the utility.
-* Watering hole attack that leads to an exploit being downloaded onto a target system to be used in the spread of malware.
+1. Ability to manipulate or disconnect the power from millions of meters and disable the remote connection to the utility.
+2. Watering hole attack that leads to an exploit being downloaded onto a target system to be used in the spread of malware.
+3. The malware can allow for monitoring of user's energy consumption.
 
 **Mitigations:**
 
+1. Adequate air gapping of energy systems.
 
 **Source:** http://www.bloomberg.com/news/2014-07-01/renewable-energy-s-expansion-exposing-grids-to-hacking.html
 
@@ -411,35 +450,45 @@ The exploit is in the form of Java code that can be delivered when browsing comp
 
 **Domain:** Home 
 
-**Description:** A home security system with wireless connectivity allows for an increase in usability and minimal home modification. In does not however, make for a more secure home.
+**Description:** A home security system with wireless connectivity allows for an increase in usability and minimal home modification. With a number of security flaws, however, it also opens up the home to greater potential for attack.
 
 **Vulnerabilities:**
 
+1. Lack of user authentication
+2. Use of default passwords
+
 **Implications for MXD:**
 
-* Ease of creating false alarms
-* Ease of suppressing alarms
-* Ability to track user movements within a home
+1. Ease of suppressing alarms and creating false alarms.
+2. Monitoring of people within the home/user profiling
+
 
 **Mitigations:**
+
+1. Use of secure passwords
 
 **Source:** https://www.blackhat.com/us-14/briefings.html
 
 ### 2. Learn how to control every room at a luxury hotel remotely: The dangers of insecure home automation deployment
 
 **Domain:** Home
-**Description:** A room remote control with a flawed home automation protocol that enables a remotely located attacker (even in another country) to control virtually every appliance in a hotel: the lighting, temperature, music, TV etc.  This can be done by exploiting flaws and reverse engineering the KNX/IP home automation protocol, as well as by scripting a Trojan which can send commands outside the hotel.
+
+**Description:** A flawed home automation protocol (KNX/IP) that enables a remotely located attacker (even in another country) to control virtually every appliance in a hotel via a remote control: the lighting, temperature, music, TV etc. This can be done by exploiting flaws and reverse engineering the KNX/IP home automation protocol, as well as by scripting a Trojan which can send commands outside the hotel.
 
 **Vulnerabilities:**
 
+1. Insecure wireless connection
+2. Use of insecure and unlocked commodity hardware
+3. Use of legacy protocols
+
 **Implications for MXD:**
 
-* Improvisation of home automation architectures 
-* Dangers of employing widely used legacy protocols
-* Security implications of using an insecure wireless connection
-* Danger of using insecure, unlocked commodity hardware
+1. Personal safety <br> The severity of these types of security flaws cannot be understated - from creating a chaotic atmosphere to raising room temperatures at night with fatal consequences.
 
 **Mitigations:**
+
+1. Use of a secured network
+2. Use of protocols that are proven to have good enough security
 
 **Source:** https://www.blackhat.com/us-14/briefings.html
 
@@ -450,42 +499,57 @@ The exploit is in the form of Java code that can be delivered when browsing comp
 
 **Vulnerabilities:**
 
+1. Ease of rooting the Nest thermostat with a plugged in USB.
+2. Bypassing firmware signing via a hardware attack.
+
 **Implications for MXD:** 
 
-* Ease of bypassing OS level security checks on devices via hardware attacks
-* Use of a rooted device to install rootkits, spyware and launch other network scanning attacks
+1. Use of a rooted device to install rootkits, spyware and launch other network scanning attacks
+2. Ability to perform further attacks on the home network after gaining initial access to the network.
+3. User profiling
+<br> Implications on personal safety.
+4. Disclosure of personal data and saved WiFi credentials for easy access to devices connected to the home network.
+5. Once access to the network has been gained, an attacker can explore the software protocols used in order to find potential vulnerabilities than can further be exploited. 
 
 **Mitigations:**
 
+1. Use of strong passwords
+2. Need for authentication for each device access on the home network
+
 **Source:** https://www.blackhat.com/us-14/briefings.html
 
-### 4. Weaponizing your pets: The War Kitteh and the Denial of Service dog
+### 4. A survey of remote automotive attack surfaces
+
+**Domain:** Automotive
+
+**Description:** An attacker that hacks an automotive network can eavesdrop on communications by enabling a microphone, as well as perpetrate disaster by disabling the brakes. Examining the automotive network of different manufacturers enables exploring the security capabilities of the different automotive networks to build in better security controls.
+
+**Vulnerabilities:**
+
+1. Vulnerabilities in the Controller Area Network
+
+**Implications for MXD:**
+
+1. Personal safety
+2. Potential for causing traffic chaos
+
+**Mitigations:** TBD
+
+**Source:** https://www.blackhat.com/us-14/briefings.html
+
+### 5. Weaponizing your pets: The War Kitteh and the Denial of Service dog
 
 **Domain:** Home
 
 **Description:** A GPS device embedded collar can track a cat’s movements throughout a neighbourhood.  Fitted with a WiFi sniffing device, this collar can now be used to intercept and steal data from IoT devices in homes. This basic premise can be adapted to load a doggie backpack with equipment such as a WiFi Pineapple to launch attacks such as a denial of service.
 
-**Vulnerabilities:**
+**Vulnerabilities:** TBD
 
 **Implications for MXD:**
 
-* Security implications over the ease of engendering readily available everyday objects with wireless data sniffing and attack capabilities
+1. Security implications of the ease of affording readily available everyday objects with wireless data sniffing and attack capabilities.
 
-**Mitigations:**
-
-**Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
-
-### 5.Home alone with localhost: Automating home defense
-
-**Domain:** Home
-
-**Description:** 
-
-**Vulnerabilities:**
-
-**Implications for MXD:**
-
-**Mitigations:**
+**Mitigations:** TBD
 
 **Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
 
@@ -497,89 +561,55 @@ The exploit is in the form of Java code that can be delivered when browsing comp
 
 **Vulnerabilities:**
 
+1. Insecure wireless connections
+2. Use of no/default passwords
+
 **Implications for MXD:**
 
-* Tracking and surveillance capabilities that can both passively collect data and actively probe for further information wirelessly
+1. Tracking and surveillance capabilities that can both passively collect data and actively probe for further information wirelessly.
+2. Disclosure of personal data
+3. Personal safety implications
 
 **Mitigations:**
+
+1. Use of strong passwords
+2. Use of proper encryption schemes
 
 **Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
 
-### 7.The internet of fails: Where IoT has gone wrong and how we’re making it right
-
-**Domain:** 
-
-**Description:**
-
-**Vulnerabilities:**
-
-**Implications for MXD:**
-
-**Mitigations:**
-
-**Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
-
-### 8.A survey of remote automotive attack surfaces
-
-**Domain:** Automotive
-
-**Description:** An attacker that hacks an automotive network can eavesdrop on communications by enabling a microphone, as well as perpetrate disaster by disabling the brakes. Examining the automotive network of different manufacturers enables exploring the security capabilities of the different automotive networks to build in better security controls.
-
-**Vulnerabilities:**
-
-**Implications for MXD:**
-
-**Mitigations:**
-
-**Source:** https://www.blackhat.com/us-14/briefings.html
-
-### 9.Attacking the internet of things using time
+### 7. Attacking the internet of things using time
 
 **Domain:**
 
 **Description:** Slow, resource constrained IoT devices are the perfect target for network-based timing attacks, which allows an attacker to brute-force credentials one character at a time, rather than guessing the entire string at once.
 
-**Vulnerabilities:**
+**Vulnerabilities:** TBD
 
 **Implications for MXD:** 
 
-* Ease of conducting a timing based brute force attack on resource constrained IoT devices
+1. Ease of conducting a timing based brute force attack on resource constrained IoT devices
 
-**Mitigations:**
+**Mitigations:** TBD
 
 **Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
 
-### 10. Hack all the things: 20 devices in 45 minutes
+### 8. Hack all the things: 20 devices in 45 minutes
 
 **Domain:** Home
 
 **Description:** Attacking internet connected IoT devices is a matter of running unsigned kernels on rooted devices.  This means that everything from TVs, baby monitors, media streamers, network cameras, home automation devices and VoIP gateways are insecure.
 
-**Vulnerabilities:**
+**Vulnerabilities:** TBD
 
 **Implications for MXD:**
 
-* Security implications of an attacker being able to root a target device and run an unsigned kernel
+1.  Security implications of an attacker being able to root a target device and run an unsigned kernel
 
-**Mitigations:**
+**Mitigations:** TBD
 
 **Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
 
-### 11. The monkey in the middle: A Pentesters guide to playing in traffic
-
-**Domain:** 
-
-**Description:** Mallory, a TCP/UDP MiTM proxy can run as a gateway for a victim network, collect session information and passwords, direct traffic to your proxy and edit traffic as it goes by.
-
-**Vulnerabilities:**
-
-**Implications for MXD:**
-
-**Mitigations:**
-
-**Source**: https://www.defcon.org/html/defcon-22/dc-22-speakers.html
-
-### 12.Just what the doctor ordered?
+### 9. Just what the doctor ordered?
 
 **Domain:** Healthcare
 
@@ -587,43 +617,92 @@ The exploit is in the form of Java code that can be delivered when browsing comp
 
 **Vulnerabilities:**
 
+1. Lack of appropriate firewall configuration
+2. Most medical devices on the internal network are internet facing.
+
 **Implications for MXD:**
 
-* Security implications of inadequate air gapping
+1. Potential injury or loss of life
+2. Security implications of inadequate air gapping
 
 **Mitigations:**
 
+1. Proper air gapping of devices and systems.
+2. Secure configuration of firewalls and perimeter defense systems.
+
 **Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
 
-### 13.Elevator hacking - From the pit to the penthouse
+### 10. Elevator hacking - From the pit to the penthouse
 
 **Domain:** Home
 
 **Description:** An elevator is virtually no different than an unlocked staircase as far as building security is concerned and is increasingly being used by attackers to bypass building security systems.
 
-**Vulnerabilities:**
+**Vulnerabilities:** TBD
 
 **Implications for MXD:**
 
-* Ease of subverting security in various facilities.
+1. Ease of subverting security systems in various facilities.
 
-**Mitigations:**
+**Mitigations:** TBD
 
 **Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
 
-### 14.USB for all!
+### 11.USB for all!
 
 **Domain:** 
 
 **Description:** With the prominence of USB in IoT devices and further capabilities such as Device Firmware Update, USB On-The-Go and debug over USB, the attack surface of USB enabled devices is ever growing. 
 
-**Vulnerabilities:**
+**Vulnerabilities:** TBD
 
 **Implications for MXD:**
 
-* Vulnerability of USB enabled devices to traffic interception and manipulation
+1. Vulnerability of USB enabled devices to traffic interception and manipulation
+2. Injection of packet data
 
-**Mitigations:**
+**Mitigations:** TBD
 
 **Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
 
+### 12. The monkey in the middle: A Pentesters guide to playing in traffic
+
+**Domain:** 
+
+**Description:** Mallory, a TCP/UDP MiTM proxy can run as a gateway for a victim network, collect session information and passwords, direct traffic to your proxy and edit traffic as it goes by.
+
+**Vulnerabilities:** TBD
+
+**Implications for MXD:** TBD
+
+**Mitigations:** TBD
+
+**Source**: https://www.defcon.org/html/defcon-22/dc-22-speakers.html
+
+### 13.Home alone with localhost: Automating home defense
+
+**Domain:** Home
+
+**Description:** TBD
+
+**Vulnerabilities:** TBD
+
+**Implications for MXD:** TBD
+
+**Mitigations:** TBD
+
+**Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html
+
+### 14.The Internet of Fails: Where IoT has gone wrong and how we’re making it right
+
+**Domain:** 
+
+**Description:**
+
+**Vulnerabilities:** TBD
+
+**Implications for MXD:** TBD
+
+**Mitigations:** TBD
+
+**Source:** https://www.defcon.org/html/defcon-22/dc-22-speakers.html

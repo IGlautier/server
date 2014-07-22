@@ -1,12 +1,8 @@
----
-author:
-- 'Ahmad W. Atamli'
-- Andrew Martin
-bibliography:
+Threat-based Security Analyses for the Internet of Things
+============
+
+bliography:
 - 'IoT.bib'
-title: |
-    Threat-based Security Analyses for the\
-    Internet of Things
 ...
 
 The *Internet of Things* (IoT) is an emerging paradigm focusing on the
@@ -31,7 +27,7 @@ Introduction
 In the last few years the world has experienced rapid advancement in
 technology, the likes of which has had a significant impact on our daily
 lives. The rise of technologies - smartphones, tablets, laptops and PCs
-- has engendered an increase in interconnectedness through time and
+has engendered an increase in interconnectedness through time and
 across the spatial dimension. Contemporary technology has moved beyond
 fostering only connections between humans, and now facilitates both the
 linkage of people to things and indeed, things to one another, to
@@ -683,8 +679,3 @@ security and privacy properties. This assessment will guide future work
 as to where more substantial efforts should be invested in developing
 security mechanisms for IoT.
 
-Acknowledgement
-===============
-
-The authors would like to thank David Rogers and Andrew Paverd for all
-the discussions and fruitful comments.

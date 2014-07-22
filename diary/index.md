@@ -70,6 +70,19 @@ Present
 
 https://docs.google.com/a/nquiringminds.com/document/d/1qXYL5Uu7WJ_X0m2K_a5zaKDPHlpu9HA-6KuIiGk-fDs/edit
 
+**Date : Thursday 17th July 2014**
+
+**Location : SetSquared, Guilford** 
+
+Reason for meeting : Q1 target update, platform and privacy scenario discussion.
+
+Present
+ 
+- Nick Allot
+- Paddy Byers
+- Mark Neve
+- Ivan Glautier 
+
 ----------------------------------------------------
 
 

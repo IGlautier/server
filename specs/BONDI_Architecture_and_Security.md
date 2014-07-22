@@ -527,7 +527,7 @@ dynamic provisioning of the Feature, in implementations that support this;
 
 an access control check that the Web Application in question is permitted to use that Feature. This delivers flexibility and usability benefits to the BONDI Security Framework as compared with simply enforcing access control at the point that JavaScript APIs are called, or JavaScript APIs attempt to perform security-relevant platform operations.
 
-the ability of a Web Runtime to resolve, based on local circumstances or other specified parameters, which particular implementation or configuration of a Feature to load or bind to. This also mirrors the approach increasingly followed by the toolkits and web API frameworks, wherein APIs are programmatically loaded rather than being explicitly and directly referenced by a tag.
+the ability of a Web Runtime to resolve, based on local circumstances or other specified parameters, which particular implementation or configuration of a Feature to load or bind to. This also mirrors the approach increasingly followed by the toolkits and web API frameworks, wherein APIs are programmatically loaded rather than being explicitly and directly referenced by a <script> tag.
 
 In the case of statically declared dependencies, the ability for a Widget User Agent to determine prior to installation whether or not a Widget is capable of running on the target Web Runtime.
 

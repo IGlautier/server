@@ -5,8 +5,8 @@
 * [Threat Models](Threat-Model)
 * [Landscape Analysis](Landscape-analysis)
 
-* [Oxford Threat model](Threat-Model/Ahmad-Threat-Analyses)
+* [Oxford Threat model](Threat-Model/Ahmad-Threat-Analyses.md)
 * [Oxford Threat model - latex version](Threat-Model/Ahmad-Threat-Analyses.tex)
 
-* [Old Threat model](Threat-Model/old-threat-model)
+* [Old Threat model](Threat-Model/old-threat-model.md)
 

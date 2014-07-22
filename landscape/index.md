@@ -1,21 +1,21 @@
 # Technology Landscape
 
 
-* [connection types](discussions/connection_types);
+* [Connection types](connection_types);
 
-* [transport security](discussions/transport_security).
+* [Transport security](transport_security).
 
 
 
-* [existing protocols](protocols)
+* [Existing protocols](protocols)
 
 * [OSs and execution environments](iot-os)
 
-* [security technologies](security-tech)
+* [Security technologies](security-tech)
 
 #Commercial Landscape 
 
-* [commercial players](commercial-players)
+* [Commercial players](commercial-players)
 
 
 
@@ -23,6 +23,6 @@
 
 # Implementation (hardware) Technology Research
 
-* [survey of hardware tech](hardware)
+* [Survey of hardware tech](hardware)
 
-* [sensor research](sensors)
+* [Sensor research](sensors)

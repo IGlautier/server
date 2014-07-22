@@ -11,28 +11,24 @@ This repository contains documents (specifications, reference docs and other dis
 Currently we have the following top-level sections:
 
 
-### [Scope definition](scope)
+### [Scope definition](scope/)
 These are formal statements of scope. (draft and subject to change)
 
 ### [Landscape and State of the Art](landscape/)
-This should include links to articles, analysis there of. Indeed any background work that is generally useful to our objectives.
+This should include links to articles, analysis thereof. Indeed any background work that is generally useful to our objectives.
 
 Any useful links and discussion documents can also go here 
 
 
-
-### [Security](security)
+### [Security](security/)
 Formally this should include threat model and security analysis
 
 
-### [Requirements](requirements)
-Formally this should include threat model and security analysis
 
+### [Requirements and Specifications](specs/)
+Requirements and formal specifications
 
-### [Architecture and Specifications](specs)
-Architecture and formal specifications
-
-(note this section uses a custom tool chain that will not render correctly in github
+(note this section uses a custom tool chain that will not render correctly in github in its entirety
 
 
 
@@ -50,6 +46,7 @@ All work will be in master unless we later decide otherwise.
 #### Tools
 The following tools may be useful for editing and previewing content (if you dont want to do it by hand)
 
+**github** if you are logged into GitHub, you can both view and edit content directly from here. This is probably the easiest method.
 
 **dillinger** web based markdown editor. Can save directly to github by linking with your github account. http://dillinger.io/
 

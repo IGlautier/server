@@ -21,12 +21,15 @@ function getLinks(content) {
 			existing[links[i].href] = false;
 			
 			if (links[i].hostname == settings.host) {
+				links[i].id = "sec" + i;
 				getText(links[i].href, i, function(res, x) {
 					var parser = new DOMParser();
 					var doc = parser.parseFromString(res, 'text/html');
 					if (doc.title == "index.md") getLinks(doc);
 					links = document.getElementsByTagName('a');
-					for (var l = 0; l < doc.body.childNodes.length; l++) links[x].parentNode.appendChild(doc.body.childNodes[l]);
+					var newDiv = document.createElement("div");
+					for (var l = 0; l < doc.body.childNodes.length; l++) newDiv.appendChild(doc.body.childNodes[l]);
+					document.getElementById("sec" + x).parentNode.nextSibling.parentNode.insertBefore(newDiv, document.getElementById("sec" + x).parentNode.nextSibling);
 				});
 			}
 			

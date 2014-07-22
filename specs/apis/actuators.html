@@ -1,0 +1,775 @@
+<!DOCTYPE html PUBLIC "html">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="picosec-apis.css" media="screen">
+<script type="text/javascript" src="picosec-apis.js"></script><title>
+ The Generic Actuator API 
+      </title>
+</head>
+<body onload="prettyPrint()">
+<div id="header">
+<img alt="picosec" class="pull-left" src="picosec_logo.png" style=""><h1 class="pull-left"><a href="/">picosec developer's documentation</a></h1>
+<button id="btn"><ul>
+<li><a href="http://picosec.org/" title="Foundation site">Foundation website</a></li>
+<li><a href="https://developer.picosec.org/" title="Developer site">Developer Portal</a></li>
+</ul>
+			Other Resources
+			
+			</button>
+</div>
+<div id="content">
+<div class="description">
+      <p>
+ The picosec Generic Actuator API provides applications with an API to control actuators.      </p>
+ 
+     </div>
+<div id="menu"><ul class="toc">
+<li><a href="#intro">Introduction</a></li>
+<li>
+<a href="#interfaces">Interfaces and Dictionaries</a><ul>
+<li><a href="#::Actuator">Actuator</a></li>
+<li><a href="#::ActuatorRange">ActuatorRange</a></li>
+<li><a href="#::PendingOperation">PendingOperation</a></li>
+<li><a href="#::ActuatorEvent">ActuatorEvent</a></li>
+</ul>
+</li>
+<li>
+<a href="#callbacks">Callbacks</a><ul>
+<li><a href="#::ActuatorSuccessCB"><code>ActuatorSuccessCB</code></a></li>
+<li><a href="#::ActuatorErrorCB"><code>ActuatorErrorCB</code></a></li>
+</ul>
+</li>
+<li><a href="#api-features">Features</a></li>
+<li><a href="#full-webidl">Full WebIDL</a></li>
+</ul></div>
+<div class="api" id="">
+<div>
+<h1>
+ The Generic Actuator API 
+      </h1>
+
+</div>
+<h2>Authors</h2>
+<div><p class="copyright"><small>© 2014 <a href="http://www.picosec.org/">picosec consortium</a>.</small></p></div>
+<h2 id="method-summary">Summary of Methods</h2>
+<table class="informaltable">
+<thead><tr>
+<th>Interface</th>
+<th>Method</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><a href="#::Actuator">Actuator</a></td>
+<td>
+<a href="#::PendingOperation">PendingOperation</a> <a href="#setValueid132706">setValue</a>(any value, ActuatorSuccessCB successCB, ActuatorErrorCB errorCB)</td>
+</tr>
+<tr>
+<td><a href="#::PendingOperation">PendingOperation</a></td>
+<td>void <a href="#cancelid131877">cancel</a>()</td>
+</tr>
+<tr>
+<td><a href="#::ActuatorEvent">ActuatorEvent</a></td>
+<td>void <a href="#initActuatorEventid131356">initActuatorEvent</a>(DOMString type, DOMString actuatorType, DOMString actuatorId, any actualValue)</td>
+</tr>
+</tbody>
+</table>
+<h2 class="section" id="intro">Introduction</h2>
+<div class="description">
+      <p>
+The picosec Generic Actuator API provides applications with an API to control actuators in the device, 
+connected to the device or in another device.
+      </p>
+      <p>
+The API is agnostic to underlying low level methods for actuator discovery and communication with 
+actuators. However, the Actuator API should be used in combination with the general picosec service 
+discovery methods findServices() and bind(). The actuator services can be located in the user's 
+personal zone or be shared on the current network.
+      </p>
+      <p>
+The section <a href="#api-features">Features</a> specifies a set of basic example actuator types supported by this API. 
+This list of actuator types could easily be extended with additional actuator types by adding feature URIs and JSON objects
+for the additional actuators.
+      </p>
+      <p>
+This is an experimental API and security and privacy issues are not specifically addressed in the 
+specification. If access to security or privacy
+sensitive actuators are provided the user agent must either acquire access permission through a 
+user interface or control access through a prearranged
+trust relationship with users. 
+      </p>
+     </div>
+<h2 class="section" id="interfaces">Interfaces and Dictionaries</h2>
+<div class="interface" id="::Actuator">
+<h3 class="section">Interface Actuator</h3>
+<div class="brief"><p>
+ This interface defines the actuator properties. 
+It is an actuator specific extension to the interface Service in the ServiceDiscovery module.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        [NoInterfaceObject] interface Actuator : <a href="servicediscovery.html#::Service">Service</a> {
+
+
+          readonly attribute any[] range;
+
+
+          readonly attribute DOMString[] unit;
+
+
+          readonly attribute DOMString? vendor;  
+
+
+          readonly attribute unsigned long?  version;
+
+
+          <a href="#::PendingOperation">PendingOperation</a> setValue (any value, optional <a href="#::ActuatorSuccessCB">ActuatorSuccessCB</a> successCB, optional <a href="#::ActuatorErrorCB">ActuatorErrorCB</a> errorCB);
+        };</pre>
+<div class="example">
+<h5>Code example</h5>
+<pre name="code" class="examplecode prettyprint">        // Handle that can be used to cancel the ongoing asynchronous discovery process.
+        var findHandle = 0;
+
+        // Handle from service.bind.
+        var actuatorHandle = 0;
+
+        // Array of found switch actuators object.
+        var availableSwitchActuators = {};
+                 
+        // Callback method that displays a list of found actuators in a selection list
+        // The selection list is dynamically extended every time a new actuator is discovered.
+        function actuatorFoundCB(actuator) {
+
+                var selectlist = document.getElementById('actuatorlist');
+                var option = document.createElement('option');
+                option.value = actuator.id;
+                option.appendChild(document.createTextNode(actuator.displayName));
+                availableSwitchActuators [actuator.id] = actuator;
+                selectlist.appendChild(option);
+
+        }
+                      
+ 
+       // Callback when bind has been successfully executed on the service object. The Actuator is authorized and ready to use
+        function bindCB(myActuator) {
+                alert('Actuator ' + myActuator.displayName + ' with ID: ' + myActuator.id + ' selected');
+                                var ON = true;
+                                var OFF = false;
+                                var successCB = function(evt){
+                                  var actualValue = JSON.parse(evt.actualValue);
+                                        alert('Switch Actuator ' + myActuator.displayName + ' is now '+ (actualValue.switchon == ON? 'ON': 'OFF'));
+                                        if(actualValue.switchon == ON){
+                                                // turn OFF after 5 Seconds 
+                                                setTimeout(function(){
+                                                  var switchValue =
+                                                  {
+                                                    "switchon" : OFF
+                                                  }
+                                                        myActuator.setValue(JSON.stringify(switchValue),successCB,errorCB);
+                                                },5000);
+                                        }       
+                                };
+                                var errorCB = function(err){
+                                        alert('Error on change the state of the Switch Actuator ' + myActuator.displayName);
+                                };
+                                // Turn Switch ON
+                                var switchValue =
+                                  {
+                                          "switchon" : ON
+                                  }
+                                myActuator.setValue(JSON.stringify(switchValue),successCB,errorCB);
+        }
+
+
+       // Callback method that is invoked when user selects an option in the actuator selection list 
+        function actuatorSelected(actuator) {
+
+                // Stops the findServices operation
+                findHandle.cancel();
+
+                // Binds to the actuator API to initiate an authorized objects used to
+                // invoke services.  
+                actuatorHandle = actuator.bind({onBind:bindCB});                               
+                
+        }
+        
+        // Get list of switch actuators registered in the device through the Service Discovery findServices() method
+        findHandle  = window.picosec.discovery.findServices({api:'http://picosec.org/api/actuators.switch'}, {onFound:actuatorFoundCB});
+ 
+       // Handle user selection of actuator
+        var actuatorlist = document.getElementById('actuatorlist');
+        actuatorlist.addEventListener("change", function (e) {
+                                var actuator = availableSwitchActuators[e.target.value];
+                                if (actuator) {
+                                    actuatorSelected(actuator);
+                                }
+        }, false);
+
+
+ </pre>
+</div>
+      
+    <div class="attributes">
+<h4>Attributes</h4>
+<dl>
+<dt class="attribute" id="Actuator_range"><code><span class="attrName"><b>
+                readonly
+            any[] range</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The range of each actuator value.
+          </p></div>
+<div class="description">
+          <p>
+The size of the range array must be the same as the number of input pins of the actuator, i.e.
+the number of members in the JSON object that representa the Actuator type. 
+The type of range is an array of <a>ActuatorRange</a> dictionary objects.
+          </p>
+         </div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Actuator_unit"><code><span class="attrName"><b>
+                readonly
+            DOMString[] unit</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The unit of each actuator value.
+          </p></div>
+<div class="description">
+          <p>
+The unit array and the range array must have the same size, 
+which represents the number of input pins of the actuator
+          </p>
+         </div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Actuator_vendor"><code><span class="attrName"><b>
+                readonly
+            DOMString? vendor</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Vendor string of this actuator.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Actuator_version"><code><span class="attrName"><b>
+                readonly
+            unsigned long? version</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Version of the actuators module.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+</dl>
+</div>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="setValueid132706"><code><b><span class="methodName">setValue</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Set a new actuator value.
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint"><a href="#::PendingOperation">PendingOperation</a> setValue(any value, optional <a href="#::ActuatorSuccessCB">ActuatorSuccessCB</a> successCB, optional <a href="#::ActuatorErrorCB">ActuatorErrorCB</a> errorCB);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>value</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>any</li>
+<li>
+<b>Description: </b>
+ the new actuator values as a JSON object. The number of members of the JSON object corresponds to the number 
+of input pins of the actuator. See section <a href="#api-features">Features</a> for specification of the JSON object for each sensor type.
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>successCB</b><ul>
+<li>
+<b>Optional: </b>Yes.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::ActuatorSuccessCB">ActuatorSuccessCB</a>
+</li>
+<li>
+<b>Description: </b>
+ the success callback called with an ActuatorEvent object as input in case the setValue call succeeded.
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>errorCB</b><ul>
+<li>
+<b>Optional: </b>Yes.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::ActuatorErrorCB">ActuatorErrorCB</a>
+</li>
+<li>
+<b>Description: </b>
+ the error callback
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::ActuatorRange">
+<h3 class="section">Dictionary ActuatorRange</h3>
+<div class="brief"><p>
+ ActuatorRange definition. The actuator range can be an interval (e.g. temperature is in interval [0°C,27°C]) or a set of 
+valid values (e.g. a switch accepts only the values {0,1} representing the ON and OFF state). All dictionary members are optional. The 
+developer should define either a set of valid values or max and/or min value but if the validValues member is present and also minValue 
+and/or maxValue is present then minValue and/or maxValue are ignored.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        dictionary ActuatorRange {
+        
+
+          any minValue;
+          
+
+          any maxValue;
+          
+
+          sequence&lt;any&gt; validValues;             
+        
+        };</pre>
+<div class="attributes">
+<h4>Dictionary Members</h4>
+<dl>
+<dt class="attribute" id="ActuatorRange_minValue"><code><span class="attrName"><b>any minValue</b></span></code></dt>
+<dd><div class="brief"><p>
+ Min range of actuator in the actuator unit.
+undefined min value means that the lower bound is not limited
+          </p></div></dd>
+<dt class="attribute" id="ActuatorRange_maxValue"><code><span class="attrName"><b>any maxValue</b></span></code></dt>
+<dd><div class="brief"><p>
+ Max range of actuator in the actuator unit.
+undefined max value means that the upper bound is not limited
+          </p></div></dd>
+<dt class="attribute" id="ActuatorRange_validValues"><code><span class="attrName"><b>sequence&lt;any&gt; validValues</b></span></code></dt>
+<dd><div class="brief"><p>
+ Valid values in the actuator unit, i.e. a valid value of the actuator must be one of the validValues.
+          </p></div></dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::PendingOperation">
+<h3 class="section">Interface PendingOperation</h3>
+<div class="brief"><p>
+ The PendingOperation interface
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        [NoInterfaceObject] interface PendingOperation {
+
+
+            void cancel ();
+        };</pre>
+<div class="description">
+        <p>
+The PendingOperation interface describes objects that are returned by asynchronous methods that are cancellable. It makes it possible to bring 
+these operations to a stop if they haven't produced a result within a desired time or before a given event, thereby possibly reclaiming resources.
+        </p>
+       </div>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="cancelid131877"><code><b><span class="methodName">cancel</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Method Cancel
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void cancel();
+</pre>
+</div>
+<div class="description">
+          <p>
+Cancels the pending setValue() asynchronous operation. When this method is called, the user agent must immediately bring the operation to a stop and return.
+Allocated resources should be released and any ongoing related network operations should be terminated. An error callback is issued with the DOMError
+name "AbortError". If the set value operation is no longer under control of the calling process, the cancel function will be ignored and all neccessary 'housekeeping functions' 
+required after starting the set value process will be performed as if the cancel had never been issued.
+          </p>
+         </div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::ActuatorEvent">
+<h3 class="section">Interface ActuatorEvent</h3>
+<div class="brief"><p>
+ This interface defines the actuator data type.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        interface ActuatorEvent {
+
+                readonly attribute DOMString actuatorType;
+
+
+                readonly attribute DOMString? actuatorId;
+
+
+                readonly attribute any actualValue;
+
+
+                void initActuatorEvent(DOMString type, DOMString actuatorType, DOMString actuatorId, any actualValue); 
+        };</pre>
+<div class="attributes">
+<h4>Attributes</h4>
+<dl>
+<dt class="attribute" id="ActuatorEvent_actuatorType"><code><span class="attrName"><b>
+                readonly
+            DOMString actuatorType</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The type of the actuator. This is a URI defining the actuator type according to the defined actuator "feature" URI strings.<br>          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="ActuatorEvent_actuatorId"><code><span class="attrName"><b>
+                readonly
+            DOMString? actuatorId</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ The unique identity of the of the specific actuator
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="ActuatorEvent_actualValue"><code><span class="attrName"><b>
+                readonly
+            any actualValue</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Actual values as a JSON object representing the current state of the actuator. 
+See section <a href="#api-features">Features</a> for specification of the JSON object for each sensor type.
+          </p></div>
+                This attribute is readonly.
+          </dd>
+</dl>
+</div>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="initActuatorEventid131356"><code><b><span class="methodName">initActuatorEvent</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Method to set initial values of actuator event.  
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void initActuatorEvent(DOMString type, DOMString actuatorType, DOMString actuatorId, any actualValue);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>type</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMString</li>
+<li>
+<b>Description: </b>
+ Event type i.e. 'actuator'
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>actuatorType</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMString</li>
+<li>
+<b>Description: </b>
+ Actuator type as a feature URI
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>actuatorId</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMString</li>
+<li>
+<b>Description: </b>
+ The unique identity of the specific actuator
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>actualValue</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>any</li>
+<li>
+<b>Description: </b>
+ Array of actual value
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="callbacks" id="callbacks">
+<h2 class="section">Callbacks</h2>
+<div class="callback" id="::ActuatorSuccessCB">
+<h3 class="section"><code>ActuatorSuccessCB</code></h3>
+<div class="brief"><p>
+ onSuccess The onSuccess method is called after the setValue succeeded.  
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        callback ActuatorSuccessCB =  void (<a href="#::ActuatorEvent">ActuatorEvent</a> event);</pre>
+<div class="synopsis">
+<h6>Signature</h6>
+<pre>void ActuatorSuccessCB(<a href="#::ActuatorEvent">ActuatorEvent</a> event);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+      <li class="param">
+<b>event</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::ActuatorEvent">ActuatorEvent</a>
+</li>
+<li>
+<b>Description: </b>
+ The event object associated to the asynchronous operation setValue
+            </li>
+</ul>
+</li>
+    </ul>
+</div>
+</div>
+<div class="callback" id="::ActuatorErrorCB">
+<h3 class="section"><code>ActuatorErrorCB</code></h3>
+<div class="brief"><p>
+ The ActuatorErrorCB method is called if an error occurs during the setValue() process.  
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">       callback ActuatorErrorCB = void (DOMError error);</pre>
+<div class="synopsis">
+<h6>Signature</h6>
+<pre>void ActuatorErrorCB(DOMError error);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+      <li class="param">
+<b>error</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMError</li>
+<li>
+<b>Description: </b>
+ <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a> object detailing what 
+went wrong in an unsuccessful setValue() asynchronous operation. The following error names could be issued:<br>- "SyntaxError": Input parameters did not match the expected pattern or value is not in range.<br>- "AbortError": Operation was aborted by the user.<br>- "TimeoutError": The operation timed out.
+            </li>
+</ul>
+</li>
+    </ul>
+</div>
+</div>
+</div>
+<h2 class="section" id="api-features">Features</h2>
+<div id="def-api-features" class="def-api-features">
+<p>This section lists the URIs used to declare the features of this API. The feature URIs are used by the developer in:</p>
+<ul>
+<li>The application's config.xml file to declare requested features.</li>
+<li>As identifier for serviceType in the picosec Discovery API's findServices() method.</li>
+</ul>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/actuators</dt>
+<dd><div class="description">
+          <p>
+Identifies all the actuator types. 
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/actuators/switch</dt>
+<dd><div class="description">
+          <p>
+Identifies the switch actuator type. A switch actuator has only one input pin which represents the state of the switch. The value is represented by the following JSON object:<br>          </p>
+          <p>
+{<br>"switchon": &lt;boolean&gt;<br>}<br>true = on, false = off.
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/actuators/linearmotor</dt>
+<dd><div class="description">
+          <p>
+Identifies the linear motor actuator type. A linear motor actuator has only one input pin which represents the speed and the direction of the movement.
+Positive values for forward direction, negative values for backwards direction. The absolute value represents the speed of the movement in km/h.
+The value is represented by the following JSON object:<br>          </p>
+          <p>
+{<br>"speed": &lt;number&gt;<br>}<br> 
+          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/actuators/rotationalmotor</dt>
+<dd><div class="description">
+          <p>
+Identifies the rotational motor actuator type. A rotational motor actuator has only one input pin which represents the speed and the direction of the rotation.
+Positive values for clockwise rotational direction, negative values for counter clockwise rotational direction. The absolute value represents the rotational speed 
+in Hz (Herz = cycles per second).
+The value is represented by the following JSON object:<br>          </p>
+          <p>
+{<br>"speed": &lt;number&gt;<br>}<br>          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/actuators/vibratingmotor</dt>
+<dd><div class="description">
+          <p>
+Identifies the vibrating motor actuator type. A vibrating motor actuator has only one input pin which represents the normalized intensity of the vibration.
+Only values in interval [0, 1] are valid. 0 means no vibration, 1 for maximal intensity.
+The value is represented by the following JSON object:<br>          </p>
+          <p>
+{<br>"intensity": &lt;number&gt;<br>}<br>          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/actuators/servomotor</dt>
+<dd><div class="description">
+          <p>
+Identifies the servo motor actuator type. A servo motor actuator has only one input pin which represents the angular position of the output shaft in degree.
+The min und max values define the lower and upper bound for valid values of the angle.
+The value is represented by the following JSON object:<br>          </p>
+          <p>
+{<br>"angle": &lt;number&gt;<br>}<br>          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/actuators/swivelmotor</dt>
+<dd><div class="description">
+          <p>
+Identifies the swivel motor actuator type. A swivel motor actuator has three input pins which represent the coordinate (x-y-z) of the swivel arm.
+The min und max values of each input pin define the lower and upper bound for valid values of each coordinate
+The values are represented by the following JSON object:<br>          </p>
+          <p>
+{<br>"x": &lt;number&gt;<br>"y": &lt;number&gt;<br>"z": &lt;number&gt;<br>}<br>          </p>
+         </div></dd>
+</dl>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/actuators/thermostat</dt>
+<dd><div class="description">
+          <p>
+Identifies the thermostat actuator type. A thermostat has only one input pin which represents the desired temperature in °C.
+The min und max values define the lower and upper bound for valid temperature values.
+The value is represented by the following JSON object:<br>          </p>
+          <p>
+{<br>"temp": &lt;number&gt;<br>}<br> 
+          </p>
+         </div></dd>
+</dl>
+</div>
+<h2 class="section" id="full-webidl">Full WebIDL</h2>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        [NoInterfaceObject] interface Actuator : <a href="servicediscovery.html#::Service">Service</a> {
+
+
+          readonly attribute any[] range;
+
+
+          readonly attribute DOMString[] unit;
+
+
+          readonly attribute DOMString? vendor;  
+
+
+          readonly attribute unsigned long?  version;
+
+
+          <a href="#::PendingOperation">PendingOperation</a> setValue (any value, optional <a href="#::ActuatorSuccessCB">ActuatorSuccessCB</a> successCB, optional <a href="#::ActuatorErrorCB">ActuatorErrorCB</a> errorCB);
+        };
+
+
+        callback ActuatorSuccessCB =  void (<a href="#::ActuatorEvent">ActuatorEvent</a> event); 
+                
+
+        dictionary ActuatorRange {
+        
+
+          any minValue;
+          
+
+          any maxValue;
+          
+
+          sequence&lt;any&gt; validValues;             
+        
+        };
+
+
+       callback ActuatorErrorCB = void (DOMError error);
+                
+
+
+        [NoInterfaceObject] interface PendingOperation {
+
+
+            void cancel ();
+        };
+
+
+
+
+        interface ActuatorEvent {
+
+                readonly attribute DOMString actuatorType;
+
+
+                readonly attribute DOMString? actuatorId;
+
+
+                readonly attribute any actualValue;
+
+
+                void initActuatorEvent(DOMString type, DOMString actuatorType, DOMString actuatorId, any actualValue); 
+        };</pre>
+</div>
+</div>
+</body>
+</html>

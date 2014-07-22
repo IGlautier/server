@@ -1,0 +1,1200 @@
+<!DOCTYPE html PUBLIC "html">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="picosec-apis.css" media="screen">
+<script type="text/javascript" src="picosec-apis.js"></script><title>
+ Discovery API 
+      </title>
+</head>
+<body onload="prettyPrint()">
+<div id="header">
+<img alt="picosec" class="pull-left" src="picosec_logo.png" style=""><h1 class="pull-left"><a href="/">picosec developer's documentation</a></h1>
+<button id="btn"><ul>
+<li><a href="http://picosec.org/" title="Foundation site">Foundation website</a></li>
+<li><a href="https://developer.picosec.org/" title="Developer site">Developer Portal</a></li>
+</ul>
+			Other Resources
+			
+			</button>
+</div>
+<div id="content">
+<div class="description">
+      <p>
+The picosec Discovery API provides web applications with an API to discover services without any previous knowledge of the service.      </p>
+     </div>
+<div id="menu"><ul class="toc">
+<li><a href="#intro">Introduction</a></li>
+<li>
+<a href="#interfaces">Interfaces and Dictionaries</a><ul>
+<li><a href="#::DiscoveryInterface">DiscoveryInterface</a></li>
+<li><a href="#::ServiceType">ServiceType</a></li>
+<li><a href="#::FindCallBack">FindCallBack</a></li>
+<li><a href="#::Service">Service</a></li>
+<li><a href="#::BindCallBack">BindCallBack</a></li>
+<li><a href="#::Options">Options</a></li>
+<li><a href="#::Filter">Filter</a></li>
+<li><a href="#::ServiceLocation">ServiceLocation</a></li>
+<li><a href="#::PendingOperation">PendingOperation</a></li>
+<li><a href="#::picosec">picosec</a></li>
+</ul>
+</li>
+<li>
+<a href="#enums">Enums</a><ul><li><a href="#::ServiceState"><code>ServiceState</code></a></li></ul>
+</li>
+<li><a href="#api-features">Features</a></li>
+<li><a href="#full-webidl">Full WebIDL</a></li>
+</ul></div>
+<div class="api" id="">
+<div>
+<h1>
+ Discovery API 
+      </h1>
+
+</div>
+<h2>Authors</h2>
+
+<div><p class="copyright"><small>© 2014 <a href="http://www.picosec.org/">picosec consortium</a>.</small></p></div>
+<h2 id="method-summary">Summary of Methods</h2>
+<table class="informaltable">
+<thead><tr>
+<th>Interface</th>
+<th>Method</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><a href="#::DiscoveryInterface">DiscoveryInterface</a></td>
+<td>
+<a href="#::PendingOperation">PendingOperation</a> <a href="#findServicesid134000">findServices</a>(ServiceType serviceType, FindCallBack findCallBack, Options? options, Filter? filter)<br>DOMString <a href="#getServiceIdid134188">getServiceId</a>(DOMString serviceType)</td>
+</tr>
+<tr>
+<td><a href="#::FindCallBack">FindCallBack</a></td>
+<td>void <a href="#onFoundid133309">onFound</a>(Service service)<br>void <a href="#onLostid133822">onLost</a>(Service service)<br>void <a href="#onErrorid133673">onError</a>(DOMError error)</td>
+</tr>
+<tr>
+<td><a href="#::Service">Service</a></td>
+<td>void <a href="#bindServiceid133026">bindService</a>(BindCallBack bindCallBack, DOMString serviceId)<br>void <a href="#unbindServiceid132465">unbindService</a>()</td>
+</tr>
+<tr>
+<td><a href="#::BindCallBack">BindCallBack</a></td>
+<td>void <a href="#onBindid132413">onBind</a>(Service service)<br>void <a href="#onUnbindid131657">onUnbind</a>(Service service)<br>void <a href="#onServiceAvailableid131718">onServiceAvailable</a>(Service service)<br>void <a href="#onServiceUnavailableid131832">onServiceUnavailable</a>(Service service)<br>void <a href="#onErrorid131491">onError</a>(DOMError error)</td>
+</tr>
+<tr>
+<td><a href="#::PendingOperation">PendingOperation</a></td>
+<td>void <a href="#cancelid143174">cancel</a>()</td>
+</tr>
+<tr>
+<td><a href="#::picosec">picosec</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 class="section" id="intro">Introduction</h2>
+<div class="description">
+      <p>
+The Discovery API is not limited to discovery of local services but also enables discovery of remote services.
+      </p>
+      <p>
+The API enables discovery of services that is exposed either:<br><br>1. in the device<br>2. by entities directly connected to the device,<br> 
+3. by entities available on the same local IP network<br>4. by trusted services registered in a personal zone. <br><br>Once a service is found the API will provide a service object that is used to bind to a service and monitor the availability of the service. The binding to a service will
+make sure that the user is authorized to use the service, create an implementation of the API and establish a communication path to the remote peer 
+providing the service. The service object hides the complexity of communicating over different bearers, do cross network addressing, traversing NAT/Firewalls and connection management. 
+      </p>
+      <p>
+Prerequisites for the Discovery API is that the web application using the API is installed, trusted and that the user of
+of the device is authenticated and authorized to use the API.
+      </p>
+     </div>
+<h2 class="section" id="interfaces">Interfaces and Dictionaries</h2>
+<div class="interface" id="::DiscoveryInterface">
+<h3 class="section">Interface DiscoveryInterface</h3>
+<div class="brief"><p>
+ The DiscoveryInterface interface provides functionality for discovery of services. 
+The API supports the possibility to discover services based on a given service type either in 
+a personal zone of trusted services or via other legacy discovery methods such as Bluetooth SD, DNS SD, mDNS or UPnP. 
+When searching for a service type the operation can be restricted by providing certain constraints and/or context information
+via a filter interface. 
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        [NoInterfaceObject] interface DiscoveryInterface  {
+
+                 <a href="#::PendingOperation">PendingOperation</a> findServices(  
+                        <a href="#::ServiceType">ServiceType</a> serviceType, 
+                        <a href="#::FindCallBack">FindCallBack</a> findCallBack, 
+                        optional <a href="#::Options">Options</a>? options, 
+                        optional <a href="#::Filter">Filter</a>? filter);
+                 
+
+                 DOMString getServiceId(DOMString serviceType);
+                 
+        };</pre>
+<div class="description">
+        <p>
+The code example below shows how an application initiates a search query
+to find a geolocation service. Whenever a service is found, a new HTML selection item
+is added to an HTML option list. Once the user selects a service, the usage of the service is authorized and an implementation of
+the API is instantiated by binding to the service.  
+        </p>
+       </div>
+<div class="example">
+<h5>Code example</h5>
+<pre name="code" class="examplecode prettyprint">        var findHandle = 0;
+        var serviceHandle = 0;
+        var geoServices = {};
+        var serviceId;
+        
+        // Callback that displays a list of found services in a HTML selection list
+        // The selection list is dynamically extended every time a new service is discovered.   
+        function serviceFoundCB(service) {      
+                var selectlist = document.getElementById('servicelist');
+                var option = document.createElement('option');
+        
+                option.value = service.id;
+                option.id = service.id;
+                option.appendChild(document.createTextNode(service.displayName));
+                geoServices[service.id] = service;
+                selectlist.appendChild(option);
+        }
+        
+        // Callback that removes a service from the selection list of found services,
+        // when the service is not available any longer. 
+        function serviceLostCB(service) {       
+                var option = document.getElementById(service.id);
+        
+                geoServices[service.id] = NULL;
+                option.parentNode.removeChild(option);
+        }
+        
+        // Success callback when bindService has been successfully executed on the service object. 
+        function bindCB(myLocationService) {
+                alert('Service ' + myLocationService.displayName + ' ready to use');
+                myLocationService.getCurrentPosition(showMap);
+        }
+        
+        // Event listner that is called when the 'change' event is dispatched on the HTML selection list.  
+        function serviceSelected(service) {     
+                // Stops the findServices operation
+                findHandle.cancel();
+        
+                // Binds to the service to initiate an authorized object used to
+                // invoke services.  
+                service.bindService({onBind:bindCB});
+        }
+        
+        if (serviceId) {
+                // If serviceId is known, bind to the service directly. Assumes
+                // that serviceId is stored persistently or received via an out
+                // of band channel. 
+                
+                window.picosec.discovery.findServices(
+                        {api:'http://picosec.org/api/w3c/geolocation'}, 
+                        {onFound:serviceFoundCB, onLost:serviceLostCB},
+                        null,
+                        {serviceID : serviceId});
+                
+                serviceHandle = window.picosec.discovery.findServices(
+                        {api:'http://picosec.org/api/w3c/geolocation'}, 
+                        {onFound:serviceFoundCB, onLost:serviceLostCB},
+                        null,
+                        {serviceID: serviceId});
+        } 
+        else {
+                // Initiate a search query for a service of the type geolocation
+                findHandle = window.picosec.discovery.findServices(
+                        {api:'http://picosec.org/api/w3c/geolocation'}, 
+                        {onFound:serviceFoundCB, onLost:serviceLostCB});
+        
+                var selectlist = document.getElementById('servicelist');
+                selectlist.addEventListener("change", function (e) {
+                        var service = geoServices[e.target.value];
+                        if (service) {
+                                serviceSelected(service);
+                        }
+                }, false);      
+        }
+ </pre>
+</div>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="findServicesid134000"><code><b><span class="methodName">findServices</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+        The findServices method initiates an asynchronous search query for services matching the requested serviceType and filter parameter. The method continues to search for services until 
+the findServices method is canceled by the application or when the maximum search timer expires. The zones in which services are to be searched are expected to be managable by the picosec runtime.
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint"><a href="#::PendingOperation">PendingOperation</a> findServices(<a href="#::ServiceType">ServiceType</a> serviceType, <a href="#::FindCallBack">FindCallBack</a> findCallBack, optional <a href="#::Options">Options</a>? options, optional <a href="#::Filter">Filter</a>? filter);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>serviceType</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::ServiceType">ServiceType</a>
+</li>
+<li>
+<b>Description: </b>
+ An input argument that defines which type of API that is requested. The serviceType is an URI that uniquely identifies the API.   
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>findCallBack</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::FindCallBack">FindCallBack</a>
+</li>
+<li>
+<b>Description: </b>
+ Callback interface used to report the outcome of the search process. 
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>options</b><ul>
+<li>
+<b>Optional: </b>Yes.</li>
+<li>
+<b>Nullable</b>: Yes</li>
+<li>
+<b>Type: </b><a href="#::Options">Options</a>
+</li>
+<li>
+<b>Description: </b>
+ Defines search options. 
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>filter</b><ul>
+<li>
+<b>Optional: </b>Yes.</li>
+<li>
+<b>Nullable</b>: Yes</li>
+<li>
+<b>Type: </b><a href="#::Filter">Filter</a>
+</li>
+<li>
+<b>Description: </b>
+ Defines a filter that be used to limit the service operation to certain constraints and context information.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+<dt class="method" id="getServiceIdid134188"><code><b><span class="methodName">getServiceId</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ For the case that the application itself exposes functionality via JavaScript service interfaces the getServiceId method generates a service identity that can be shared with other peers to establish a binding without invoking a findServices operation. If no matching API is found the method will return Null. 
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">DOMString getServiceId(DOMString serviceType);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>serviceType</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMString</li>
+<li>
+<b>Description: </b>
+ URI identifying which type of API that shall be exposed. The URI shall be must be declared in the manifest in the api-name attribute of the picosec:shared-api element.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::ServiceType">
+<h3 class="section">Dictionary ServiceType</h3>
+<div class="brief"><p>
+ The Service Type dictionary is used to define which type of service that is requested. 
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        dictionary ServiceType {
+
+                DOMString api;
+        };</pre>
+<div class="attributes">
+<h4>Dictionary Members</h4>
+<dl>
+<dt class="attribute" id="ServiceType_api"><code><span class="attrName"><b>DOMString api</b></span></code></dt>
+<dd><div class="brief"><p>
+        URI used to identify which type of API that is requested. The URI could either be:<br><br> 
+1. picosec Feature URI that is defined for each API by picosec, for example http://picosec.org/api/sensors/temperature,<br>2. picosec Feature URI for referred unchanged API specifications, for example http://picosec.org/api/w3c/geolocation,<br>3. an unique URI identifying an API exposed by a web application. The URI shall be the same URI as exposed by the web application manifest in the api-name attribute of the picosec:shared-api element.<br>      
+          </p></div></dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::FindCallBack">
+<h3 class="section">Interface FindCallBack</h3>
+<div class="brief"><p>
+ FindCallBack interface definition
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        callback interface FindCallBack {
+
+                 void onFound(<a href="#::Service">Service</a> service);        
+                 
+
+                 void onLost(<a href="#::Service">Service</a> service);
+                          
+
+                 void onError(DOMError error);
+                                 
+        };</pre>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="onFoundid133309"><code><b><span class="methodName">onFound</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Asynchronous callback used whenever a new service is found.      
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void onFound(<a href="#::Service">Service</a> service);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>service</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::Service">Service</a>
+</li>
+<li>
+<b>Description: </b>
+ An input argument representing the found service.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+<dt class="method" id="onLostid133822"><code><b><span class="methodName">onLost</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Asynchronous callback used whenever the state of a service change from available to unavailable.       
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void onLost(<a href="#::Service">Service</a> service);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>service</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::Service">Service</a>
+</li>
+<li>
+<b>Description: </b>
+ An input argument representing the lost service.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+<dt class="method" id="onErrorid133673"><code><b><span class="methodName">onError</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Asynchronous error callback.   
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void onError(DOMError error);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>error</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMError</li>
+<li>
+<b>Description: </b>
+ <a href="http://dvcs.w3.org/hg/domcore/raw-file/default/Overview.html#error-types-table">DOMError</a>: 
+of type TimeoutError if the timeout timer expired, SecurityError if not authorized to use the service, AbortError 
+if the discovery process was canceled by the application. In addition service type or filter specific error types 
+could be issued.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::Service">
+<h3 class="section">Interface Service</h3>
+<div class="brief"><p>
+ The Service interface provides an API to bind to a specific service and monitor
+the availability of a bound service in an asynchronous manner. The process of binding
+to a service involves:<br><br>1. mutual authentication between the service and the personal zone<br>2. in case of cross zone personal interworking, mutual authentication between the zones<br>3. agreement on data handling obligations as set out in the service's privacy policy<br>4. verifying access privileges and checks the need for elevated privileges<br>5. instantiate an implementation of the API that can be used by applications to request services from the requested API.<br><br>Once the service object is instantiated, the service object will act as a proxy to the remote peer that will be able to invoke methods
+associated with API type under the window object of the remote peer. For example an application that successfully binds 
+to a "http://picosec.org/api/tv" API will be able to invoke methods from the remote peer as described in the code example below.<br><br>The Service interface inherits the DOM EventTarget interface. This means that events can be dispatched at instances of the Service interface or
+on instances of interfaces that inherit the Service interface. One example is the picosec generic Sensor API Sensor interface that inherits the 
+Service interface and listens to sensor events.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        [NoInterfaceObject] interface Service : <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html#eventtarget">EventTarget</a> {
+
+                readonly attribute ServiceState state;
+                
+
+                readonly attribute DOMString api;
+                
+
+                readonly attribute DOMString id;
+                
+
+                readonly attribute DOMString displayName;
+                
+
+                readonly attribute DOMString serviceAddress;            
+                
+
+                readonly attribute DOMString description;
+                
+
+                readonly attribute DOMString icon;
+                
+
+                void bindService(<a href="#::BindCallBack">BindCallBack</a> bindCallBack, optional DOMString serviceId);
+                
+
+                void unbindService();
+        };</pre>
+<div class="example">
+<h5>Code example</h5>
+<pre name="code" class="examplecode prettyprint">        succesBindCallBack(tvService) {
+                // Invoke a remote method.
+                tvService.display.setChannel(channel, success);
+                
+                // Register an event listner from event orginating from the remote peer.
+                tvService.display.addEventListener('channelchange', success);
+        }  
+ </pre>
+</div>
+      
+    <div class="attributes">
+<h4>Attributes</h4>
+<dl>
+<dt class="attribute" id="Service_state"><code><span class="attrName"><b>
+                readonly
+            ServiceState state</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Current service state. 
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Service_api"><code><span class="attrName"><b>
+                readonly
+            DOMString api</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ API is a global unique URI identifying the type of API provided by the service. 
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Service_id"><code><span class="attrName"><b>
+                readonly
+            DOMString id</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Id is a globally unique id representing the binding to the service. The id can be used
+to resume the binding again to the service without invoking the findServices process again.
+The id can be stored persistently to be able to resume a binding to a service across
+power cycles. 
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Service_displayName"><code><span class="attrName"><b>
+                readonly
+            DOMString displayName</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ A human readable name of the service. 
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Service_serviceAddress"><code><span class="attrName"><b>
+                readonly
+            DOMString serviceAddress</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ A human readable name of the device hosting the service. 
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Service_description"><code><span class="attrName"><b>
+                readonly
+            DOMString description</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ A URL referring to a detailed description of the service. 
+          </p></div>
+                This attribute is readonly.
+          </dd>
+<dt class="attribute" id="Service_icon"><code><span class="attrName"><b>
+                readonly
+            DOMString icon</b></span></code></dt>
+<dd>
+<div class="brief"><p>
+ Icon is an URL referring to an icon that represents the service. 
+          </p></div>
+                This attribute is readonly.
+          </dd>
+</dl>
+</div>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="bindServiceid133026"><code><b><span class="methodName">bindService</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Binds to the service uniquely identified by the service identity.  
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void bindService(<a href="#::BindCallBack">BindCallBack</a> bindCallBack, optional DOMString serviceId);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>bindCallBack</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::BindCallBack">BindCallBack</a>
+</li>
+<li>
+<b>Description: </b>
+ Asynchrounous callback to report the states of the bindService operation and the availability of the service.  
+              </li>
+</ul>
+</li>
+        <li class="param">
+<b>serviceId</b><ul>
+<li>
+<b>Optional: </b>Yes.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMString</li>
+<li>
+<b>Description: </b>
+ Unique id of the binding to the particular service. If no serviceId is provided as an in parameter, the id attribute in the Service interface will be used to bind the service.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+<dt class="method" id="unbindServiceid132465"><code><b><span class="methodName">unbindService</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Releases all resources and connections allocated by the service object.  
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void unbindService();
+</pre>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::BindCallBack">
+<h3 class="section">Interface BindCallBack</h3>
+<div class="brief"><p>
+ Bind success callback interface definition
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">         callback interface BindCallBack {
+
+                 void onBind(<a href="#::Service">Service</a> service);
+                 
+
+                 void onUnbind(<a href="#::Service">Service</a> service);
+                 
+
+                 void onServiceAvailable(<a href="#::Service">Service</a> service);
+                 
+
+                 void onServiceUnavailable(<a href="#::Service">Service</a> service);
+                          
+
+                 void onError(DOMError error); 
+        };</pre>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="onBindid132413"><code><b><span class="methodName">onBind</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Asynchronous success callback.       
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void onBind(<a href="#::Service">Service</a> service);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>service</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::Service">Service</a>
+</li>
+<li>
+<b>Description: </b>
+ An input argument representing the service.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+<dt class="method" id="onUnbindid131657"><code><b><span class="methodName">onUnbind</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Asynchronous callback used when a service is unbound.      
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void onUnbind(<a href="#::Service">Service</a> service);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>service</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::Service">Service</a>
+</li>
+<li>
+<b>Description: </b>
+ An input argument representing the service.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+<dt class="method" id="onServiceAvailableid131718"><code><b><span class="methodName">onServiceAvailable</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Asynchronous callback indicating that the service is available again.
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void onServiceAvailable(<a href="#::Service">Service</a> service);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>service</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::Service">Service</a>
+</li>
+<li>
+<b>Description: </b>
+ An input argument representing the service.      
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+<dt class="method" id="onServiceUnavailableid131832"><code><b><span class="methodName">onServiceUnavailable</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Asynchronous callback indicating the service is temporarily unavailable.
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void onServiceUnavailable(<a href="#::Service">Service</a> service);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>service</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b><a href="#::Service">Service</a>
+</li>
+<li>
+<b>Description: </b>
+ An input argument representing the service.
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+<dt class="method" id="onErrorid131491"><code><b><span class="methodName">onError</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Asynchronous error callback.   
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void onError(DOMError error);
+</pre>
+</div>
+<div class="parameters">
+<h5>Parameters</h5>
+<ul>
+        <li class="param">
+<b>error</b><ul>
+<li>
+<b>Optional: </b>No.</li>
+<li>
+<b>Nullable</b>: No</li>
+<li>
+<b>Type: </b>DOMError</li>
+<li>
+<b>Description: </b>
+ DOMError (see above for definitions used by this interface). 
+              </li>
+</ul>
+</li>
+      </ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::Options">
+<h3 class="section">Dictionary Options</h3>
+<div class="brief"><p>
+ Options dictionary
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        dictionary Options {
+
+                unsigned short timeout = 120;
+        };</pre>
+<div class="attributes">
+<h4>Dictionary Members</h4>
+<dl>
+<dt class="attribute" id="Options_timeout"><code><span class="attrName"><b>unsigned short timeout</b></span></code></dt>
+<dd><div class="brief"><p>
+        A timeout value for the findService operation in seconds between 0-65535. 
+Default value is 120 seconds. It is possible to disable the timeout by setting 
+the timeout value to Number.POSITIVE_INFINITY.
+          </p></div></dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::Filter">
+<h3 class="section">Dictionary Filter</h3>
+<div class="brief"><p>
+ Filter dictionary. An instance of this dictionary can optionally be used in 
+findServices(). All dictionary member fields are optional except that the the zoneId 
+dictionary member must be present when the cache member is set to "false".
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        dictionary Filter {
+
+
+                boolean cache = true;   
+        
+
+                DOMString[] zoneId;
+                
+
+                DOMString serviceID;
+                 
+
+                boolean remoteServices = false;
+
+
+                <a href="#::ServiceLocation">ServiceLocation</a>? serviceLocation;      
+        };</pre>
+<div class="example">
+<h5>Code example</h5>
+<pre name="code" class="examplecode prettyprint">    
+       // Examples of picosec service discovery using the filter parameter.           
+                                      
+       // Initiate a search query for a temperature sensor in two personal zones.
+       findHandle = window.picosec.discovery.findServices(
+                    {api:'http://picosec.org/api/sensors/temperature'}, 
+                    {onFound:serviceFoundCB, onLost:serviceLostCB},
+                    null,
+                    {cache:false, zoneId:[bobsmith@pzh.picosec.org/raspberrypi, tobyealden@pzh.picosec.org/raspberrypi]});                                      
+                                      
+       // Initiate a search query for a specific TV service whose service ID is already known.
+       findHandle = window.picosec.discovery.findServices(
+                    {api:'http://picosec.org/api/tv'}, 
+                    {onFound:serviceFoundCB, onLost:serviceLostCB},
+                    null,
+                    {serviceID: myServiceId});                                                                                                                        
+             
+          
+</pre>
+</div>
+<div class="attributes">
+<h4>Dictionary Members</h4>
+<dl>
+<dt class="attribute" id="Filter_cache"><code><span class="attrName"><b>boolean cache</b></span></code></dt>
+<dd><div class="brief"><p>
+        When cache is true, which is default, it means that a call to findServices () only 
+will search for information on available services cached in the PZP on the users 
+current device. This means that no communication with the PZH or with other devices 
+are executed.<br>When cache is false, it means that a call to findServices () will execute communication, 
+either through the PZH or directly, with the actual external devices within the user's 
+personal zone or in other personal zones to check the actual availability of the searched 
+service. When cache is false the zoneId dictionary member must be present to limit the search to the
+specified personal zones.
+          </p></div></dd>
+<dt class="attribute" id="Filter_zoneId"><code><span class="attrName"><b>DOMString[] zoneId</b></span></code></dt>
+<dd><div class="brief"><p>
+        Identities of personal zones that will be used to search for services. <br>If this dictionary member is not present the service will be searched for in all available zones.<br>If the dictionary member is present but no one of the zones listed are available an onError 
+callback, with DOMError type "NetworkError", is issued.
+          </p></div></dd>
+<dt class="attribute" id="Filter_serviceID"><code><span class="attrName"><b>DOMString serviceID</b></span></code></dt>
+<dd><div class="brief"><p>
+        If set service discovery will only return the service with the given identifier. This
+can be used to establish a service binding directly if the service identity is already
+known, for example if the service identity was stored persistently for later reuse
+or it was received via out of band.  
+          </p></div></dd>
+<dt class="attribute" id="Filter_remoteServices"><code><span class="attrName"><b>boolean remoteServices</b></span></code></dt>
+<dd><div class="brief"><p>
+        If remoteService is false the findServices method will limit the search for services that are  
+connected directly to the device (including Bluetooth, NFC, etc if available) or to the same 
+local IP network.<br>If remoteServices is true, the findServices method will extend the search for services outside 
+the local IP network (including other PZHs). Default value is false. 
+          </p></div></dd>
+<dt class="attribute" id="Filter_serviceLocation"><code><span class="attrName"><b><a href="#::ServiceLocation">ServiceLocation</a>? serviceLocation</b></span></code></dt>
+<dd><div class="brief"><p>
+        With the serviceLocation attribute it is possible to indicate where the service shall be located.
+If the serviceLocation dictionary member is not present or null, the location of the service is not 
+considered during the findServices process.  
+          </p></div></dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::ServiceLocation">
+<h3 class="section">Dictionary ServiceLocation</h3>
+<div class="brief"><p>
+ ServiceLocation interface 
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        dictionary ServiceLocation {
+
+                double? latitude;
+
+
+                double? longitude;
+                
+
+                double accuracy;                
+        };</pre>
+<div class="attributes">
+<h4>Dictionary Members</h4>
+<dl>
+<dt class="attribute" id="ServiceLocation_latitude"><code><span class="attrName"><b>double? latitude</b></span></code></dt>
+<dd><div class="brief"><p>
+        The latitude attribute is the geographic coordinate specified in decimal degrees. 
+If the latitude is null the latitude of the device invoking the findServices method will be used.       
+          </p></div></dd>
+<dt class="attribute" id="ServiceLocation_longitude"><code><span class="attrName"><b>double? longitude</b></span></code></dt>
+<dd><div class="brief"><p>
+        The longitude attribute is the geographic coordinate specified in decimal degrees.      
+If the longitude is null the longitude of the device invoking the findServices method will be used.
+          </p></div></dd>
+<dt class="attribute" id="ServiceLocation_accuracy"><code><span class="attrName"><b>double accuracy</b></span></code></dt>
+<dd><div class="brief"><p>
+        The accuracy denotes the accuracy level of the latitude and longitude coordinates in meters.            
+This is used to limit the geographical area for finding services.
+          </p></div></dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::PendingOperation">
+<h3 class="section">Interface PendingOperation</h3>
+<div class="brief"><p>
+ Pending Operation interface 
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        [NoInterfaceObject] interface PendingOperation {
+
+                void cancel();
+        };</pre>
+<div class="methods">
+<h4>Methods</h4>
+<dl>
+<dt class="method" id="cancelid143174"><code><b><span class="methodName">cancel</span></b></code></dt>
+<dd>
+<div class="brief"><p>
+ Method Cancel
+          </p></div>
+<div class="synopsis">
+<h5>Signature</h5>
+<pre class="signature prettyprint">void cancel();
+</pre>
+</div>
+<div class="description">
+          <p>
+Cancels the pending asynchronous discovery operation. When this method is called, the user agent must immediately bring the 
+operation to a stop and return. Allocated resources should be released and any ongoing related network operations should be 
+terminated. An error callback is issued with the DOMError name "AbortError".
+          </p>
+         </div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="interface" id="::picosec">
+<h3 class="section">Interface picosec (partial interface)</h3>
+<div class="brief"><p>
+ The picosecDiscovery interface describes the part of the Discovery
+API accessible through the picosec object.
+        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        partial interface picosec {
+                readonly attribute <a href="#::DiscoveryInterface">DiscoveryInterface</a> discovery;
+        };</pre>
+</div>
+<div class="enums" id="enums">
+<h2 class="section">Enums</h2>
+<div class="enum" id="ServiceState_enum">
+<h3 class="section"><code>ServiceState</code></h3>
+<div class="brief"><p>
+ Service state.<br>        </p></div>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        enum ServiceState {"initiating", "available", "unavailable"};</pre>
+<div class="enumvalues">
+<h4>Values</h4>
+<dl>
+<dt class="enumvalue"><code>initiating</code></dt>
+<dd></dd>
+<dt class="enumvalue"><code>available</code></dt>
+<dd></dd>
+<dt class="enumvalue"><code>unavailable</code></dt>
+<dd></dd>
+</dl>
+</div>
+</div>
+</div>
+<h2 class="section" id="api-features">Features</h2>
+<div id="def-api-features" class="def-api-features">
+<p>This section lists the URIs used to declare the features of this API. The feature URIs are used by the developer in:</p>
+<ul>
+<li>The application's config.xml file to declare requested features.</li>
+<li>As identifier for serviceType in the picosec Discovery API's findServices() method.</li>
+</ul>
+<dl class="def-api-feature">
+<dt>http://picosec.org/api/discovery</dt>
+<dd></dd>
+</dl>
+</div>
+<h2 class="section" id="full-webidl">Full WebIDL</h2>
+<h5>WebIDL</h5>
+<pre class="webidl prettyprint">        [NoInterfaceObject] interface DiscoveryInterface  {
+
+                 <a href="#::PendingOperation">PendingOperation</a> findServices(  
+                        <a href="#::ServiceType">ServiceType</a> serviceType, 
+                        <a href="#::FindCallBack">FindCallBack</a> findCallBack, 
+                        optional <a href="#::Options">Options</a>? options, 
+                        optional <a href="#::Filter">Filter</a>? filter);
+                 
+
+                 DOMString getServiceId(DOMString serviceType);
+                 
+        };              
+
+        dictionary ServiceType {
+
+                DOMString api;
+        };
+                
+
+        callback interface FindCallBack {
+
+                 void onFound(<a href="#::Service">Service</a> service);        
+                 
+
+                 void onLost(<a href="#::Service">Service</a> service);
+                          
+
+                 void onError(DOMError error);
+                                 
+        };
+        
+
+        enum ServiceState {"initiating", "available", "unavailable"};
+        
+
+        
+        [NoInterfaceObject] interface Service : <a href="http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html#eventtarget">EventTarget</a> {
+
+                readonly attribute ServiceState state;
+                
+
+                readonly attribute DOMString api;
+                
+
+                readonly attribute DOMString id;
+                
+
+                readonly attribute DOMString displayName;
+                
+
+                readonly attribute DOMString serviceAddress;            
+                
+
+                readonly attribute DOMString description;
+                
+
+                readonly attribute DOMString icon;
+                
+
+                void bindService(<a href="#::BindCallBack">BindCallBack</a> bindCallBack, optional DOMString serviceId);
+                
+
+                void unbindService();
+        };
+        
+
+         
+         callback interface BindCallBack {
+
+                 void onBind(<a href="#::Service">Service</a> service);
+                 
+
+                 void onUnbind(<a href="#::Service">Service</a> service);
+                 
+
+                 void onServiceAvailable(<a href="#::Service">Service</a> service);
+                 
+
+                 void onServiceUnavailable(<a href="#::Service">Service</a> service);
+                          
+
+                 void onError(DOMError error); 
+        };
+        
+
+        dictionary Options {
+
+                unsigned short timeout = 120;
+        };
+        
+
+        dictionary Filter {
+
+
+                boolean cache = true;   
+        
+
+                DOMString[] zoneId;
+                
+
+                DOMString serviceID;
+                 
+
+                boolean remoteServices = false;
+
+
+                <a href="#::ServiceLocation">ServiceLocation</a>? serviceLocation;      
+        };
+        
+
+        dictionary ServiceLocation {
+
+                double? latitude;
+
+
+                double? longitude;
+                
+
+                double accuracy;                
+        };
+        
+        
+
+        [NoInterfaceObject] interface PendingOperation {
+
+                void cancel();
+        };
+        
+
+
+        partial interface picosec {
+                readonly attribute <a href="#::DiscoveryInterface">DiscoveryInterface</a> discovery;
+        };</pre>
+</div>
+</div>
+</body>
+</html>

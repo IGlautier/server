@@ -73,7 +73,7 @@ app.get(/^(.+)$/, function(req, res){
 							else throw err; 
 						}
 						else {
-							template.templatemd(data, function(output) {
+							template.templatemd(data, req.params[0]+".md",  function(output) {
 								util.pump(output,res);
 							});
 						}	
