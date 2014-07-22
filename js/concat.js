@@ -24,9 +24,7 @@ function getLinks(content) {
 			/*check if a local link*/
 			getText(links[i].href, function(res) {
 				if (res.title == "index.md") getLinks(res);
-				var newContent = document.createElement("div");
-				newContent.innerHTML = res.;
-				links[i].href.parentNode.appendChild(newContent);
+				links[i].href.parentNode.appendChild(res.body.childNodes);
 			});
 			
 		}

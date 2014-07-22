@@ -14,7 +14,7 @@ Currently we have the following top-level sections:
 ### [Scope definition](scope)
 These are formal statements of scope. (draft and subject to change)
 
-### [Landscape and State of the Art](landscape)
+### [Landscape and State of the Art](landscape/)
 This should include links to articles, analysis there of. Indeed any background work that is generally useful to our objectives.
 
 Any useful links and discussion documents can also go here 

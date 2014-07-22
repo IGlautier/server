@@ -14,7 +14,7 @@ app.get("/", function(req, res) {
 			else throw err;
 		}
 		else {
-			template.templatemd(data, function(output) {
+			template.templatemd(data, "Home", function(output) {
 				util.pump(output,res);
 			});
 		}	
@@ -22,9 +22,18 @@ app.get("/", function(req, res) {
 });
 
 app.get("/concatenate", function(req, res) {
-	template.templateconcat(data, function(output) {
-		util.pump(output,res);
-	});
+	fs.readFile(__dirname + "/index.md", "utf8", function(err,data) {
+		console.log(__dirname + "/concatenate");
+		if(err) {
+			if(err.code == "ENOENT")	res.send("404 - not found");
+			else throw err;
+		}
+		else {
+			template.templateconcat(data, "Concatenate", function(output) {
+				util.pump(output,res);
+			});
+		}	
+	});	
 });
 
 /* serves all the md files */
@@ -38,7 +47,7 @@ app.get("*.md", function(req, res) {
 			else throw err; 
 		}
 		else {
-			template.templatemd(data, function(output) {
+			template.templatemd(data, req.params[0]+".md", function(output) {
 				util.pump(output,res);
 			});
 		}	
@@ -50,10 +59,6 @@ app.post("/", function(req, res) {
 	res.send("OK");
 });
 
-
-
-
-
 /* serves all the static files and index files*/
 app.get(/^(.+)$/, function(req, res){ 
 	console.log('static file request : ' + util.inspect(req.params, false, null));
@@ -62,7 +67,17 @@ app.get(/^(.+)$/, function(req, res){
 		
 			switch(err.code) {
 				case "ENOENT":
-					res.send("404 - not found");
+					fs.readFile(__dirname + req.params[0]+".md", "utf8", function(err,data) {
+					if(err) {
+							if(err.code == "ENOENT")	res.send("404 - not found");
+							else throw err; 
+						}
+						else {
+							template.templatemd(data, function(output) {
+								util.pump(output,res);
+							});
+						}	
+					});
 					break;
 				case "EISDIR":
 					fs.readFile(__dirname + req.params[0]+"/index.md", "utf8", function(err,data) {
@@ -71,7 +86,7 @@ app.get(/^(.+)$/, function(req, res){
 							else throw err; 
 						}
 						else {
-							template.templatemd(data, function(output) {
+							template.templatemd(data, "index.md", function(output) {
 								util.pump(output,res);
 							});
 						}	
@@ -87,8 +102,6 @@ app.get(/^(.+)$/, function(req, res){
 	});
 	
 });
-
-
 
 var port = process.env.PORT || 5000;
 	app.listen(port, function() {

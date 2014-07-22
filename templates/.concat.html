@@ -21,6 +21,7 @@ xmlDoc=xmlhttp.response;
 var settings = JSON.parse(xmlDoc);
 window.onload = function () { 
 
+	getLinks(document.body);
 	var elements = document.getElementsByClassName('uml');
 
 	for (var elem = 0; elem<elements.length; elem++) {

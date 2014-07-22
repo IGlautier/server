@@ -19,12 +19,12 @@ marked.setOptions({
 
 
 
-function templatemd(data, callback) {
+function templatemd(data, name, callback) {
 	marked(data, function(err, content) 
 		{
 			if(err) throw err; 
 			console.log("Templating an md file");
-			var stream = mu.compileAndRender('.mdwiki.html', {body: content, sitename: settings.sitename});
+			var stream = mu.compileAndRender('.mdwiki.html', {title: name,body: content, sitename: settings.sitename});
 			callback(stream);
 		});
 }
