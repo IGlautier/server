@@ -7,6 +7,7 @@
   <title>{{title}}</title>
  </head>
  <body>
+ {{{body}}}
  </body>
 <script type="text/javascript" src="{{{sitename}}}/js/concat.js"></script>
 <script type="text/javascript" src="{{{sitename}}}/js/rawdeflate.js"></script>
@@ -14,6 +15,7 @@
 <script type="text/javascript">
 /* Plant uml processing */
 var x = 0;
+window.existing = {};
 xmlhttp=new XMLHttpRequest();
 xmlhttp.open("GET","{{{sitename}}}/settings.json",false);
 xmlhttp.send();

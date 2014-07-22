@@ -34,7 +34,7 @@ function templateconcat(data, callback) {
 		{
 			if(err) throw err; 
 			console.log("Templating concatenation page");
-			var stream = mu.compileAndRender('.concat.html', {title: "Concatenate", sitename: settings.sitename});
+			var stream = mu.compileAndRender('.concat.html', {title: "Concatenate", body: content, sitename: settings.sitename});
 			callback(stream);
 		});
 }

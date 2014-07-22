@@ -29,7 +29,7 @@ app.get("/concatenate", function(req, res) {
 			else throw err;
 		}
 		else {
-			template.templateconcat(data, "Concatenate", function(output) {
+			template.templateconcat(data, function(output) {
 				util.pump(output,res);
 			});
 		}	

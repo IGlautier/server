@@ -1,17 +1,15 @@
-var existing;
 
-getText = function(url, callback) {
+function getText(url, num, callback) {
     var request = new XMLHttpRequest();
-	
+	request.open('GET', url);
     request.onreadystatechange = function()
     {
         if (request.readyState == 4 && request.status == 200)
         {
-            callback(request.responseXML); 
+            callback(request.responseText, num); 
         }
     }; 
-    request.open('GET', url);
-	request.responseType = "document";
+    
     request.send();
 }
 
@@ -21,11 +19,16 @@ function getLinks(content) {
 	for(var i = 0; i < links.length; i++) {
 		if(typeof existing[links[i].href] == "undefined") {
 			existing[links[i].href] = false;
-			/*check if a local link*/
-			getText(links[i].href, function(res) {
-				if (res.title == "index.md") getLinks(res);
-				links[i].href.parentNode.appendChild(res.body.childNodes);
-			});
+			
+			if (links[i].hostname == settings.host) {
+				getText(links[i].href, i, function(res, x) {
+					var parser = new DOMParser();
+					var doc = parser.parseFromString(res, 'text/html');
+					if (doc.title == "index.md") getLinks(doc);
+					links = document.getElementsByTagName('a');
+					for (var l = 0; l < doc.body.childNodes.length; l++) links[x].parentNode.appendChild(doc.body.childNodes[l]);
+				});
+			}
 			
 		}
 	}
